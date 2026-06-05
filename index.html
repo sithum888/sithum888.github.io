@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>QuickSave — Download Videos in Seconds</title>
+<meta name="description" content="Download YouTube, TikTok, Facebook Reels, and Instagram videos instantly. Choose quality, convert to MP3, cut videos — free, fast, no registration."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg-main: #0a0e1a;
+  --bg-nav: #0d1220;
+  --bg-card: #111827;
+  --bg-card2: #141d2e;
+  --bg-input: #0d1628;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.12);
+  --text: #f0f4ff;
+  --text2: #8b9fc0;
+  --text3: #4a5a7a;
+  --blue: #3b82f6;
+  --blue2: #2563eb;
+  --blue-dim: rgba(59,130,246,0.15);
+  --blue-glow: rgba(59,130,246,0.08);
+  --font: 'Inter', system-ui, sans-serif;
+  --r: 8px;
+  --r2: 12px;
+  --r3: 16px;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg-main); color: var(--text); font-family: var(--font); font-size: 15px; line-height: 1.6; min-height: 100vh; }
+
+/* ─── NAV ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  background: var(--bg-nav);
+  border-bottom: 1px solid var(--border);
+  height: 60px; display: flex; align-items: center; padding: 0 32px;
+}
+.nav-inner { max-width: 1100px; margin: 0 auto; width: 100%; display: flex; align-items: center; gap: 0; }
+.nav-logo {
+  display: flex; align-items: center; gap: 10px; cursor: pointer;
+  font-size: 17px; font-weight: 700; color: var(--text); text-decoration: none; margin-right: 40px;
+}
+.nav-logo-icon {
+  width: 32px; height: 32px; background: var(--blue); border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+}
+.nav-logo-icon svg { width: 17px; height: 17px; fill: white; }
+.nav-links { display: flex; align-items: center; gap: 4px; flex: 1; }
+.nav-link {
+  background: none; border: none; color: var(--text2); font-family: var(--font);
+  font-size: 14px; font-weight: 400; padding: 6px 14px; border-radius: 6px;
+  cursor: pointer; transition: color .15s, background .15s; display: flex; align-items: center; gap: 6px;
+  position: relative;
+}
+.nav-link:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+.nav-link.active { color: var(--text); }
+.nav-link.active::after {
+  content: ''; position: absolute; bottom: -1px; left: 14px; right: 14px; height: 2px;
+  background: var(--blue); border-radius: 1px;
+}
+.nav-link svg { width: 15px; height: 15px; opacity: .7; }
+.nav-cta {
+  background: var(--blue); color: white; border: none; padding: 8px 20px;
+  border-radius: 8px; font-size: 14px; font-weight: 600; font-family: var(--font);
+  cursor: pointer; transition: background .15s; white-space: nowrap;
+}
+.nav-cta:hover { background: var(--blue2); }
+
+/* ─── PAGES ─── */
+.page { display: none; padding-top: 60px; }
+.page.active { display: block; }
+
+/* ─── HERO ─── */
+.hero {
+  background: linear-gradient(180deg, #0d1628 0%, #0a0e1a 100%);
+  padding: 80px 32px 72px; text-align: center; position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; top: -100px; left: 50%; transform: translateX(-50%);
+  width: 700px; height: 500px;
+  background: radial-gradient(ellipse, rgba(59,130,246,0.12) 0%, transparent 60%);
+  pointer-events: none;
+}
+.hero h1 {
+  font-size: clamp(36px, 6vw, 64px); font-weight: 800; letter-spacing: -1.5px;
+  line-height: 1.1; margin-bottom: 20px; color: var(--text); position: relative;
+}
+.hero p {
+  color: var(--text2); font-size: 17px; font-weight: 400; max-width: 520px;
+  margin: 0 auto 40px; line-height: 1.7; position: relative;
+}
+.url-box {
+  max-width: 680px; margin: 0 auto 28px;
+  background: #0d1628; border: 1.5px solid var(--border2);
+  border-radius: 12px; display: flex; align-items: center; padding: 6px 6px 6px 16px;
+  gap: 10px; position: relative; transition: border-color .2s, box-shadow .2s;
+}
+.url-box:focus-within { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,0.12); }
+.url-box-icon { color: var(--text3); flex-shrink: 0; }
+.url-box-icon svg { width: 18px; height: 18px; display: block; }
+.url-input {
+  flex: 1; background: none; border: none; outline: none; font-family: var(--font);
+  font-size: 15px; color: var(--text); min-width: 0;
+}
+.url-input::placeholder { color: var(--text3); }
+.dl-btn {
+  background: var(--blue); color: white; border: none; padding: 11px 22px;
+  border-radius: 8px; font-size: 14px; font-weight: 600; font-family: var(--font);
+  cursor: pointer; display: flex; align-items: center; gap: 8px; white-space: nowrap;
+  transition: background .15s;
+}
+.dl-btn:hover { background: var(--blue2); }
+.dl-btn svg { width: 16px; height: 16px; fill: white; }
+.feature-pills {
+  display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 24px;
+  position: relative;
+}
+.pill {
+  background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+  border-radius: 100px; padding: 6px 14px; font-size: 12.5px; color: var(--text2);
+  display: flex; align-items: center; gap: 6px;
+}
+.pill svg { width: 13px; height: 13px; opacity: .6; }
+
+/* ─── SECTION ─── */
+section { padding: 72px 32px; }
+section.alt { background: #0c1020; }
+.section-inner { max-width: 1100px; margin: 0 auto; }
+.section-title {
+  font-size: clamp(24px, 3.5vw, 36px); font-weight: 800; letter-spacing: -.5px;
+  text-align: center; margin-bottom: 48px; color: var(--text);
+}
+
+/* ─── FEATURE CARDS ─── */
+.features-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+}
+@media(max-width: 900px) { .features-grid { grid-template-columns: repeat(2, 1fr); } }
+@media(max-width: 500px) { .features-grid { grid-template-columns: 1fr; } }
+.feat-card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--r3);
+  padding: 24px 20px; cursor: pointer; transition: border-color .2s, background .2s;
+  text-decoration: none; display: block;
+}
+.feat-card:hover { border-color: rgba(59,130,246,0.3); background: var(--bg-card2); }
+.feat-icon {
+  width: 40px; height: 40px; border-radius: 10px; background: var(--blue-dim);
+  display: flex; align-items: center; justify-content: center; margin-bottom: 16px;
+}
+.feat-icon svg { width: 20px; height: 20px; stroke: var(--blue); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.feat-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+.feat-card p { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+/* ─── HOW IT WORKS ─── */
+.steps-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+}
+@media(max-width: 700px) { .steps-grid { grid-template-columns: 1fr; } }
+.step-card {
+  background: var(--bg-card); border: 1px solid var(--border); padding: 32px 28px;
+  position: relative;
+}
+.step-card:first-child { border-radius: var(--r3) 0 0 var(--r3); }
+.step-card:last-child { border-radius: 0 var(--r3) var(--r3) 0; }
+.step-num { font-size: 42px; font-weight: 900; color: var(--blue); line-height: 1; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+.step-num-icon { width: 36px; height: 36px; }
+.step-num-icon svg { width: 36px; height: 36px; stroke: var(--blue); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; opacity: .6; }
+.step-arrow { color: var(--text3); margin-top: 12px; }
+.step-arrow svg { width: 20px; height: 20px; stroke: var(--text3); fill: none; stroke-width: 2; }
+.step-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+.step-card p { font-size: 13.5px; color: var(--text2); line-height: 1.65; }
+
+/* ─── TOOLS GRID ─── */
+.tools-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+}
+@media(max-width: 900px) { .tools-grid { grid-template-columns: repeat(2, 1fr); } }
+@media(max-width: 500px) { .tools-grid { grid-template-columns: 1fr; } }
+.tool-card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--r3);
+  padding: 18px 20px; cursor: pointer; transition: border-color .2s, background .2s;
+  text-decoration: none; display: flex; align-items: center; gap: 14px; position: relative;
+}
+.tool-card:hover { border-color: rgba(59,130,246,0.3); background: var(--bg-card2); }
+.tool-card-icon {
+  width: 36px; height: 36px; border-radius: 8px; background: var(--blue-dim);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.tool-card-icon svg { width: 18px; height: 18px; stroke: var(--blue); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.tool-card-text { flex: 1; min-width: 0; }
+.tool-card h4 { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.3; }
+.tool-card span { font-size: 11.5px; color: var(--text3); display: block; margin-top: 2px; }
+.tool-card-arrow { color: var(--blue); opacity: .6; flex-shrink: 0; }
+.tool-card-arrow svg { width: 16px; height: 16px; stroke: var(--blue); fill: none; stroke-width: 2; }
+
+/* ─── FOOTER ─── */
+footer {
+  border-top: 1px solid var(--border); padding: 24px 32px;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+}
+.footer-inner { max-width: 1100px; margin: 0 auto; width: 100%; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+footer p { color: var(--text3); font-size: 13px; }
+footer nav-links-f { display: flex; gap: 20px; }
+footer a { color: var(--text3); font-size: 13px; text-decoration: none; transition: color .15s; cursor: pointer; }
+footer a:hover { color: var(--text2); }
+
+/* ─── TOOL PAGE HERO ─── */
+.tool-page-hero {
+  background: linear-gradient(180deg, #0d1628 0%, #0a0e1a 100%);
+  padding: 60px 32px 52px; text-align: center; position: relative; overflow: hidden;
+  border-bottom: 1px solid var(--border);
+}
+.tool-page-hero::before {
+  content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%);
+  width: 500px; height: 400px;
+  background: radial-gradient(ellipse, rgba(59,130,246,0.1) 0%, transparent 60%);
+  pointer-events: none;
+}
+.breadcrumb { display: flex; align-items: center; gap: 8px; margin-bottom: 24px; justify-content: center; }
+.breadcrumb button { background: none; border: none; color: var(--text3); font-family: var(--font); font-size: 13px; cursor: pointer; transition: color .15s; }
+.breadcrumb button:hover { color: var(--blue); }
+.breadcrumb span { color: var(--text3); font-size: 13px; }
+.breadcrumb strong { color: var(--text2); font-size: 13px; font-weight: 400; }
+.badge {
+  display: inline-block; background: var(--blue-dim); border: 1px solid rgba(59,130,246,0.2);
+  color: var(--blue); font-size: 12px; font-weight: 500; padding: 4px 12px;
+  border-radius: 100px; margin-bottom: 20px;
+}
+.tool-page-hero h1 { font-size: clamp(28px, 5vw, 52px); font-weight: 800; letter-spacing: -1px; margin-bottom: 14px; position: relative; }
+.tool-page-hero p { color: var(--text2); font-size: 16px; max-width: 500px; margin: 0 auto; line-height: 1.7; position: relative; }
+
+/* ─── TOOL INTERFACE BOX ─── */
+.tool-box {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--r3);
+  padding: 32px; max-width: 760px; margin: 0 auto;
+}
+.tool-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; color: var(--text3); margin-bottom: 10px; }
+.tool-url-row { display: flex; gap: 10px; margin-bottom: 20px; }
+.tool-url-row input {
+  flex: 1; background: var(--bg-input); border: 1.5px solid var(--border); border-radius: var(--r2);
+  padding: 12px 16px; font-size: 14.5px; color: var(--text); font-family: var(--font); outline: none;
+  transition: border-color .2s, box-shadow .2s; min-width: 0;
+}
+.tool-url-row input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+.tool-url-row input::placeholder { color: var(--text3); }
+.analyze-btn {
+  background: var(--blue); color: white; border: none; padding: 12px 20px;
+  border-radius: var(--r2); font-size: 14px; font-weight: 600; font-family: var(--font);
+  cursor: pointer; white-space: nowrap; transition: background .15s;
+}
+.analyze-btn:hover { background: var(--blue2); }
+.loading-bar {
+  height: 3px; background: var(--bg-input); border-radius: 2px; overflow: hidden; margin-bottom: 20px; display: none;
+}
+.loading-bar-inner {
+  height: 100%; width: 0%; background: var(--blue); border-radius: 2px;
+  transition: width .05s linear;
+}
+.options-panel { display: none; }
+.opts-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; color: var(--text3); margin-bottom: 12px; }
+.quality-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 8px; margin-bottom: 20px; }
+.q-btn {
+  background: var(--bg-input); border: 1.5px solid var(--border); border-radius: var(--r2);
+  padding: 12px 8px; text-align: center; cursor: pointer; transition: all .15s; font-family: var(--font);
+}
+.q-btn:hover { border-color: var(--blue); }
+.q-btn.active { border-color: var(--blue); background: rgba(59,130,246,0.08); }
+.q-btn .q-res { font-size: 16px; font-weight: 700; color: var(--text); display: block; line-height: 1.2; }
+.q-btn .q-sub { font-size: 11px; color: var(--text3); display: block; margin-top: 3px; }
+.q-btn.active .q-res { color: var(--blue); }
+.format-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.fmt-btn {
+  background: var(--bg-input); border: 1.5px solid var(--border); border-radius: var(--r);
+  padding: 8px 18px; font-size: 13px; font-weight: 500; cursor: pointer; color: var(--text2);
+  font-family: var(--font); transition: all .15s;
+}
+.fmt-btn:hover { border-color: var(--blue); color: var(--text); }
+.fmt-btn.active { border-color: var(--blue); color: var(--blue); background: rgba(59,130,246,0.08); }
+.big-dl-btn {
+  width: 100%; background: var(--blue); color: white; border: none; padding: 15px;
+  border-radius: var(--r2); font-size: 16px; font-weight: 700; font-family: var(--font);
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+  transition: background .15s; margin-top: 8px;
+}
+.big-dl-btn:hover { background: var(--blue2); }
+.big-dl-btn svg { width: 20px; height: 20px; fill: white; }
+
+/* ─── VIDEO PREVIEW ─── */
+.video-preview {
+  background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--r2);
+  padding: 16px; display: flex; gap: 14px; align-items: center; margin-bottom: 20px;
+}
+.video-thumb {
+  width: 96px; height: 60px; background: #0a0e1a; border-radius: 6px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; overflow: hidden;
+}
+.video-thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; }
+.video-thumb-placeholder svg { width: 28px; height: 28px; stroke: var(--text3); fill: none; stroke-width: 1.5; }
+.video-info h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; color: var(--text); line-height: 1.4; }
+.video-info span { font-size: 12px; color: var(--text3); }
+
+/* ─── FAQ ─── */
+.faq-wrap { max-width: 760px; margin: 0 auto; }
+.faq-item { border-bottom: 1px solid var(--border); }
+.faq-q {
+  width: 100%; background: none; border: none; text-align: left; padding: 18px 0;
+  font-size: 15px; font-weight: 500; color: var(--text); font-family: var(--font);
+  cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 12px;
+}
+.faq-q:hover { color: var(--blue); }
+.faq-icon { width: 20px; height: 20px; flex-shrink: 0; transition: transform .3s; color: var(--text3); }
+.faq-icon svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; }
+.faq-q.open .faq-icon { transform: rotate(45deg); color: var(--blue); }
+.faq-a { overflow: hidden; max-height: 0; transition: max-height .35s ease; }
+.faq-a p { padding-bottom: 18px; color: var(--text2); font-size: 14px; line-height: 1.75; }
+
+/* ─── BENEFITS ─── */
+.benefits-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+@media(max-width: 700px) { .benefits-grid { grid-template-columns: repeat(2, 1fr); } }
+@media(max-width: 440px) { .benefits-grid { grid-template-columns: 1fr; } }
+.benefit-card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--r3);
+  padding: 24px 20px;
+}
+.benefit-icon { font-size: 24px; margin-bottom: 12px; }
+.benefit-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+.benefit-card p { font-size: 13px; color: var(--text2); line-height: 1.65; }
+
+/* ─── RELATED ─── */
+.related-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.related-chip {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--r);
+  padding: 7px 14px; font-size: 13px; color: var(--text2); cursor: pointer; transition: all .15s;
+  font-family: var(--font); display: flex; align-items: center; gap: 6px;
+}
+.related-chip:hover { border-color: var(--blue); color: var(--blue); }
+.related-chip svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+/* ─── FINAL CTA SECTION ─── */
+.cta-section { padding: 80px 32px; text-align: center; }
+.cta-inner { max-width: 560px; margin: 0 auto; }
+.cta-inner h2 { font-size: clamp(28px, 4vw, 44px); font-weight: 800; letter-spacing: -.5px; margin-bottom: 16px; }
+.cta-inner p { color: var(--text2); font-size: 16px; margin-bottom: 36px; line-height: 1.7; }
+.cta-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn-ghost { background: transparent; border: 1px solid var(--border2); color: var(--text); padding: 12px 24px; border-radius: var(--r2); font-size: 14px; font-weight: 500; font-family: var(--font); cursor: pointer; transition: all .15s; }
+.btn-ghost:hover { background: var(--bg-card); }
+
+/* ─── TOAST ─── */
+#toast {
+  position: fixed; bottom: 28px; right: 28px; z-index: 1000;
+  background: #10b981; color: white; padding: 14px 22px; border-radius: var(--r2);
+  font-weight: 600; font-size: 14px; display: none; align-items: center; gap: 8px;
+  box-shadow: 0 4px 24px rgba(0,0,0,.4); animation: slideUp .3s ease;
+}
+#toast svg { width: 18px; height: 18px; stroke: white; fill: none; stroke-width: 2.5; }
+@keyframes slideUp { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: translateY(0); } }
+
+/* ─── STATS ─── */
+.stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--r2); overflow: hidden; margin-top: -1px; }
+@media(max-width:700px){ .stats-row { grid-template-columns: repeat(2,1fr); } }
+.stat { background: var(--bg-card); padding: 28px 20px; text-align: center; }
+.stat-n { font-size: 32px; font-weight: 800; color: var(--blue); line-height: 1; letter-spacing: -1px; }
+.stat-l { font-size: 12.5px; color: var(--text3); margin-top: 6px; }
+
+/* ─── DURATION CALC ─── */
+.calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+@media(max-width:500px){ .calc-grid { grid-template-columns: 1fr; } }
+.calc-field label { display: block; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; color: var(--text3); margin-bottom: 8px; }
+.calc-field input, .calc-field select {
+  width: 100%; background: var(--bg-input); border: 1.5px solid var(--border); border-radius: var(--r2);
+  padding: 11px 14px; font-size: 15px; color: var(--text); font-family: var(--font); outline: none;
+  transition: border-color .2s;
+}
+.calc-field input:focus, .calc-field select:focus { border-color: var(--blue); }
+.calc-field select option { background: var(--bg-card); }
+.calc-results { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+@media(max-width:500px){ .calc-results { grid-template-columns: 1fr 1fr; } }
+.calc-stat { background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--r2); padding: 14px; text-align: center; }
+.calc-stat-n { font-size: 22px; font-weight: 800; color: var(--blue); letter-spacing: -.5px; }
+.calc-stat-l { font-size: 11px; color: var(--text3); margin-top: 4px; }
+
+/* ─── THUMBNAIL GRID ─── */
+.thumb-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin-bottom: 20px; }
+.thumb-option {
+  background: var(--bg-input); border: 1.5px solid var(--border); border-radius: var(--r2);
+  overflow: hidden; cursor: pointer; transition: border-color .2s;
+}
+.thumb-option:hover, .thumb-option.selected { border-color: var(--blue); }
+.thumb-preview { height: 100px; background: linear-gradient(135deg, #141d2e, #0a0e1a); display: flex; align-items: center; justify-content: center; }
+.thumb-preview svg { width: 32px; height: 32px; stroke: var(--text3); fill: none; stroke-width: 1.5; }
+.thumb-info { padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; }
+.thumb-info strong { font-size: 13px; color: var(--text); }
+.thumb-info span { font-size: 11px; color: var(--text3); }
+
+/* ─── UPLOAD DROP ─── */
+.drop-area {
+  border: 2px dashed var(--border2); border-radius: var(--r2); padding: 40px 20px;
+  text-align: center; color: var(--text2); transition: border-color .2s; margin-bottom: 16px;
+  cursor: pointer;
+}
+.drop-area:hover { border-color: var(--blue); }
+.drop-area svg { width: 40px; height: 40px; stroke: var(--text3); fill: none; stroke-width: 1.2; margin-bottom: 12px; }
+.drop-area p { font-size: 14px; }
+.drop-area small { font-size: 12px; color: var(--text3); margin-top: 6px; display: block; }
+
+/* ─── QUALITY CONVERTER ─── */
+.qc-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px; align-items: center; margin-bottom: 20px; }
+.qc-box { background: var(--bg-input); border: 1.5px solid var(--border); border-radius: var(--r2); padding: 16px; text-align: center; }
+.qc-box.highlighted { border-color: var(--blue); }
+.qc-quality { font-size: 28px; font-weight: 800; color: var(--blue); line-height: 1; }
+.qc-label { font-size: 11px; color: var(--text3); margin-top: 4px; }
+.qc-arrow svg { width: 24px; height: 24px; stroke: var(--text3); fill: none; stroke-width: 2; }
+.savings-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+.savings-stat { background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--r2); padding: 14px; text-align: center; }
+.savings-stat .n { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.savings-stat .l { font-size: 11px; color: var(--text3); }
+
+/* ─── MOBILE NAV ─── */
+@media(max-width:720px){
+  nav { padding: 0 16px; }
+  .nav-links { display: none; }
+  #mobile-menu-btn { display: flex !important; }
+  .hero { padding: 52px 16px 48px; }
+  section { padding: 48px 16px; }
+  footer { padding: 20px 16px; }
+  .tool-box { padding: 20px; }
+}
+#mobile-menu-btn { display: none; background: none; border: none; color: var(--text2); cursor: pointer; padding: 8px; margin-left: auto; }
+#mobile-menu-btn svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2; }
+#mobile-nav { display: none; position: fixed; top: 60px; left: 0; right: 0; bottom: 0; background: rgba(10,14,26,.97); z-index: 150; flex-direction: column; padding: 24px 20px; gap: 4px; overflow-y: auto; }
+#mobile-nav.open { display: flex; }
+#mobile-nav button { background: none; border: none; color: var(--text2); font-family: var(--font); font-size: 17px; font-weight: 500; padding: 14px 0; border-bottom: 1px solid var(--border); cursor: pointer; text-align: left; transition: color .15s; }
+#mobile-nav button:hover { color: var(--blue); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo" onclick="showPage('home')">
+      <div class="nav-logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      </div>
+      QuickSave
+    </div>
+    <div class="nav-links" id="nav-links">
+      <button class="nav-link active" id="nl-home" onclick="showPage('home')">
+        <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" width="15" height="15"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+        Home
+      </button>
+      <button class="nav-link" id="nl-tools" onclick="showPage('tools')">
+        <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" width="15" height="15"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+        Tools
+      </button>
+      <button class="nav-link" id="nl-how" onclick="scrollToSection('how-it-works')">
+        <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" width="15" height="15"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+        How It Works
+      </button>
+      <button class="nav-link" id="nl-faq" onclick="scrollToSection('faq-section')">
+        <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" width="15" height="15"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        FAQ
+      </button>
+    </div>
+    <button class="nav-cta" onclick="focusInput()">Get Started</button>
+    <button id="mobile-menu-btn" onclick="toggleMobile()">
+      <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile Nav -->
+<div id="mobile-nav">
+  <button onclick="showPage('home');toggleMobile()">🏠 Home</button>
+  <button onclick="showPage('video-downloader');toggleMobile()">📥 Video Downloader</button>
+  <button onclick="showPage('mp3-downloader');toggleMobile()">🎵 MP3 Downloader</button>
+  <button onclick="showPage('video-to-audio');toggleMobile()">🔊 Video to Audio</button>
+  <button onclick="showPage('video-cutter');toggleMobile()">✂️ Video Cutter</button>
+  <button onclick="showPage('thumbnail-downloader');toggleMobile()">🖼 Thumbnail Downloader</button>
+  <button onclick="showPage('duration-calculator');toggleMobile()">⏱ Duration Calculator</button>
+  <button onclick="showPage('quality-converter');toggleMobile()">⚙️ Quality Converter</button>
+</div>
+
+
+<!-- ════════════════════════════════
+     PAGE: HOME
+════════════════════════════════ -->
+<div id="page-home" class="page active">
+
+  <!-- HERO -->
+  <div class="hero">
+    <h1>Download Videos in Seconds</h1>
+    <p>Paste any YouTube, TikTok, Facebook Reel, or Instagram link and download videos instantly in your preferred quality.</p>
+    <div class="url-box" id="hero-box">
+      <span class="url-box-icon">
+        <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+      </span>
+      <input class="url-input" id="hero-url" type="url" placeholder="Paste your video link here..." onkeydown="if(event.key==='Enter')heroDownload()"/>
+      <button class="dl-btn" onclick="heroDownload()">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download Now
+      </button>
+    </div>
+    <div class="feature-pills">
+      <span class="pill"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg>HD Downloads</span>
+      <span class="pill"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg>Multiple Quality Options</span>
+      <span class="pill"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg>MP3 Conversion</span>
+      <span class="pill"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg>No Registration</span>
+      <span class="pill"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg>Fast Processing</span>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <section style="padding: 0 32px; background: var(--bg-main);">
+    <div class="section-inner">
+      <div class="stats-row">
+        <div class="stat"><div class="stat-n">50M+</div><div class="stat-l">Downloads</div></div>
+        <div class="stat"><div class="stat-n">4.9★</div><div class="stat-l">Rating</div></div>
+        <div class="stat"><div class="stat-n">1.2s</div><div class="stat-l">Avg Speed</div></div>
+        <div class="stat"><div class="stat-n">8+</div><div class="stat-l">Platforms</div></div>
+        <div class="stat"><div class="stat-n">100%</div><div class="stat-l">Free</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section>
+    <div class="section-inner">
+      <h2 class="section-title">Powerful Features</h2>
+      <div class="features-grid">
+        <div class="feat-card" onclick="showPage('video-downloader')">
+          <div class="feat-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+          <h3>Video Downloader</h3>
+          <p>Grab videos from any platform in full quality.</p>
+        </div>
+        <div class="feat-card" onclick="showPage('mp3-downloader')">
+          <div class="feat-icon"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+          <h3>MP3 Downloader</h3>
+          <p>Extract crisp audio tracks as MP3 files.</p>
+        </div>
+        <div class="feat-card" onclick="showPage('video-to-audio')">
+          <div class="feat-icon"><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 010 7.07"/><path d="M19.07 4.93a10 10 0 010 14.14"/></svg></div>
+          <h3>Video to Audio</h3>
+          <p>Convert any video into pure audio instantly.</p>
+        </div>
+        <div class="feat-card" onclick="showPage('thumbnail-downloader')">
+          <div class="feat-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg></div>
+          <h3>Thumbnail Downloader</h3>
+          <p>Download high-res video thumbnails fast.</p>
+        </div>
+        <div class="feat-card" onclick="showPage('video-cutter')">
+          <div class="feat-icon"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg></div>
+          <h3>Video Cutter</h3>
+          <p>Trim and clip videos to perfect length.</p>
+        </div>
+        <div class="feat-card" onclick="showPage('duration-calculator')">
+          <div class="feat-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg></div>
+          <h3>Duration Calculator</h3>
+          <p>Calculate total runtime across clips.</p>
+        </div>
+        <div class="feat-card" onclick="showPage('quality-converter')">
+          <div class="feat-icon"><svg viewBox="0 0 24 24"><polyline points="17,1 21,5 17,9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7,23 3,19 7,15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg></div>
+          <h3>Quality Converter</h3>
+          <p>Switch resolutions from 360p to 4K.</p>
+        </div>
+        <div class="feat-card" onclick="showPage('video-downloader')">
+          <div class="feat-icon"><svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16,6 12,2 8,6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></div>
+          <h3>Social Media Downloader</h3>
+          <p>Save from TikTok, Instagram & Facebook.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="alt" id="how-it-works">
+    <div class="section-inner">
+      <h2 class="section-title">How It Works</h2>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num">
+            <span>01</span>
+            <span class="step-num-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></span>
+          </div>
+          <h3>Paste Video URL</h3>
+          <p>Copy your link and paste it into the input box.</p>
+          <div class="step-arrow"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg></div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">
+            <span>02</span>
+            <span class="step-num-icon"><svg viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg></span>
+          </div>
+          <h3>Select Quality or Format</h3>
+          <p>Choose your preferred resolution or audio format.</p>
+          <div class="step-arrow"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg></div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">
+            <span>03</span>
+            <span class="step-num-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+          </div>
+          <h3>Download Instantly</h3>
+          <p>Get your file in seconds, no waiting required.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOOLS -->
+  <section>
+    <div class="section-inner">
+      <h2 class="section-title">Explore Our Tools</h2>
+      <div class="tools-grid">
+        <div class="tool-card" onclick="showPage('video-downloader')">
+          <div class="tool-card-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+          <div class="tool-card-text"><h4>Video Downloader</h4><span>/video-downloader</span></div>
+          <div class="tool-card-arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></div>
+        </div>
+        <div class="tool-card" onclick="showPage('mp3-downloader')">
+          <div class="tool-card-icon"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+          <div class="tool-card-text"><h4>MP3 Downloader</h4><span>/mp3-downloader</span></div>
+          <div class="tool-card-arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></div>
+        </div>
+        <div class="tool-card" onclick="showPage('video-to-audio')">
+          <div class="tool-card-icon"><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 010 7.07"/></svg></div>
+          <div class="tool-card-text"><h4>Video to Audio</h4><span>/video-to-audio</span></div>
+          <div class="tool-card-arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></div>
+        </div>
+        <div class="tool-card" onclick="showPage('video-cutter')">
+          <div class="tool-card-icon"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/></svg></div>
+          <div class="tool-card-text"><h4>Video Cutter</h4><span>/video-cutter</span></div>
+          <div class="tool-card-arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></div>
+        </div>
+        <div class="tool-card" onclick="showPage('thumbnail-downloader')">
+          <div class="tool-card-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg></div>
+          <div class="tool-card-text"><h4>Thumbnail Downloader</h4><span>/thumbnail-downloader</span></div>
+          <div class="tool-card-arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></div>
+        </div>
+        <div class="tool-card" onclick="showPage('duration-calculator')">
+          <div class="tool-card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg></div>
+          <div class="tool-card-text"><h4>Duration Calculator</h4><span>/duration-calculator</span></div>
+          <div class="tool-card-arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></div>
+        </div>
+        <div class="tool-card" onclick="showPage('quality-converter')">
+          <div class="tool-card-icon"><svg viewBox="0 0 24 24"><polyline points="17,1 21,5 17,9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7,23 3,19 7,15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg></div>
+          <div class="tool-card-text"><h4>Quality Converter</h4><span>/quality-converter</span></div>
+          <div class="tool-card-arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="alt" id="faq-section">
+    <div class="section-inner">
+      <h2 class="section-title">Frequently Asked Questions</h2>
+      <div class="faq-wrap">
+        <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Is QuickSave completely free?<span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="faq-a"><p>Yes, 100% free — no account, no subscription, no hidden fees. All tools are available without any cost.</p></div></div>
+        <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Which platforms are supported?<span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="faq-a"><p>YouTube, TikTok, Instagram Reels, Facebook Reels, Twitter/X, Vimeo, Dailymotion, and many more platforms are supported.</p></div></div>
+        <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">What quality options can I choose from?<span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="faq-a"><p>We offer 144p, 240p, 360p, 480p, 720p HD, 1080p Full HD, 1440p 2K, and 4K Ultra HD where available from the source video.</p></div></div>
+        <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">How do I convert YouTube to MP3?<span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="faq-a"><p>Use the MP3 Downloader tool — paste any YouTube URL, choose your bitrate (up to 320kbps), and download instantly.</p></div></div>
+        <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Are my downloads private?<span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="faq-a"><p>We don't log or store your URLs or downloaded content. All processing is temporary and wiped immediately after delivery.</p></div></div>
+        <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Can I download TikTok videos without watermark?<span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="faq-a"><p>Yes — QuickSave removes TikTok watermarks automatically in most cases, giving you a clean video file.</p></div></div>
+        <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Do I need to install anything?<span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="faq-a"><p>No installation needed. QuickSave runs entirely in your browser on any device — desktop, tablet, or mobile.</p></div></div>
+        <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Why is my download failing?<span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="faq-a"><p>The video may be private, age-restricted, or geo-blocked. Make sure the link is publicly accessible and try again.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <p>© 2026 QuickSave. All rights reserved.</p>
+      <div style="display:flex;gap:20px;flex-wrap:wrap">
+        <a>Privacy Policy</a>
+        <a>Terms of Service</a>
+        <a>DMCA</a>
+        <a>Contact</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+
+<!-- ════════════════════════════════
+     PAGE: TOOLS (overview)
+════════════════════════════════ -->
+<div id="page-tools" class="page">
+  <section>
+    <div class="section-inner">
+      <h1 style="font-size:clamp(28px,4vw,48px);font-weight:800;letter-spacing:-1px;margin-bottom:12px">All Tools</h1>
+      <p style="color:var(--text2);font-size:16px;margin-bottom:48px">A complete suite of free video tools — no registration needed.</p>
+      <div class="features-grid">
+        <div class="feat-card" onclick="showPage('video-downloader')"><div class="feat-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div><h3>Video Downloader</h3><p>Download videos from YouTube, TikTok, Instagram, and Facebook in HD or 4K.</p></div>
+        <div class="feat-card" onclick="showPage('mp3-downloader')"><div class="feat-icon"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div><h3>MP3 Downloader</h3><p>Extract MP3 audio from any video URL with customizable bitrate settings.</p></div>
+        <div class="feat-card" onclick="showPage('video-to-audio')"><div class="feat-icon"><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 010 7.07"/><path d="M19.07 4.93a10 10 0 010 14.14"/></svg></div><h3>Video to Audio</h3><p>Convert any video to MP3, WAV, AAC, or FLAC format instantly.</p></div>
+        <div class="feat-card" onclick="showPage('thumbnail-downloader')"><div class="feat-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg></div><h3>Thumbnail Downloader</h3><p>Download YouTube thumbnails in HD, Full HD, and max resolution.</p></div>
+        <div class="feat-card" onclick="showPage('video-cutter')"><div class="feat-icon"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg></div><h3>Video Cutter</h3><p>Trim and cut videos precisely by setting start and end timestamps online.</p></div>
+        <div class="feat-card" onclick="showPage('duration-calculator')"><div class="feat-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg></div><h3>Duration Calculator</h3><p>Calculate total video duration, watch time, and ad revenue estimates.</p></div>
+        <div class="feat-card" onclick="showPage('quality-converter')"><div class="feat-icon"><svg viewBox="0 0 24 24"><polyline points="17,1 21,5 17,9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7,23 3,19 7,15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg></div><h3>Quality Converter</h3><p>Change video quality from 4K to 1080p, 720p or lower to reduce file size.</p></div>
+        <div class="feat-card" onclick="showPage('video-downloader')"><div class="feat-icon"><svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16,6 12,2 8,6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></div><h3>Social Media Downloader</h3><p>Save videos from TikTok, Instagram Reels, Facebook and more.</p></div>
+      </div>
+    </div>
+  </section>
+  <footer><div class="footer-inner"><p>© 2026 QuickSave. All rights reserved.</p><div style="display:flex;gap:20px"><a>Privacy</a><a>Terms</a><a>Contact</a></div></div></footer>
+</div>
+
+
+<!-- ════════════════════════════════
+     PAGE: VIDEO DOWNLOADER
+════════════════════════════════ -->
+<div id="page-video-downloader" class="page">
+  <div class="tool-page-hero">
+    <div class="breadcrumb"><button onclick="showPage('home')">Home</button><span>/</span><strong>Video Downloader</strong></div>
+    <span class="badge">Free Online Tool</span>
+    <h1>Video Downloader</h1>
+    <p>Download YouTube, TikTok, Instagram Reels & Facebook videos in HD. Choose resolution before downloading.</p>
+  </div>
+  <section>
+    <div class="tool-box">
+      <div class="tool-label">Video URL</div>
+      <div class="tool-url-row">
+        <input type="url" id="vd-url" placeholder="Paste YouTube, TikTok, Instagram, or Facebook link..." onkeydown="if(event.key==='Enter')analyzeUrl('vd')"/>
+        <button class="analyze-btn" onclick="analyzeUrl('vd')">Analyze</button>
+      </div>
+      <div class="loading-bar" id="vd-loading"><div class="loading-bar-inner" id="vd-bar"></div></div>
+      <div class="options-panel" id="vd-opts">
+        <div id="vd-preview" class="video-preview">
+          <div class="video-thumb"><div class="video-thumb-placeholder"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+          <div class="video-info"><h4 id="vd-title">Video ready to download</h4><span id="vd-meta">Detected from URL</span></div>
+        </div>
+        <div class="opts-label">Select Quality</div>
+        <div class="quality-grid">
+          <div class="q-btn active" onclick="selectQ(this)"><span class="q-res">4K</span><span class="q-sub">2160p</span></div>
+          <div class="q-btn" onclick="selectQ(this)"><span class="q-res">2K</span><span class="q-sub">1440p</span></div>
+          <div class="q-btn" onclick="selectQ(this)"><span class="q-res">FHD</span><span class="q-sub">1080p</span></div>
+          <div class="q-btn" onclick="selectQ(this)"><span class="q-res">HD</span><span class="q-sub">720p</span></div>
+          <div class="q-btn" onclick="selectQ(this)"><span class="q-res">SD</span><span class="q-sub">480p</span></div>
+          <div class="q-btn" onclick="selectQ(this)"><span class="q-res">Low</span><span class="q-sub">360p</span></div>
+        </div>
+        <div class="opts-label">Format</div>
+        <div class="format-row">
+          <button class="fmt-btn active" onclick="selectFmt(this)">MP4</button>
+          <button class="fmt-btn" onclick="selectFmt(this)">WebM</button>
+          <button class="fmt-btn" onclick="selectFmt(this)">MKV</button>
+        </div>
+        <button class="big-dl-btn" onclick="doDownload('vd')">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download Video
+        </button>
+      </div>
+    </div>
+  </section>
+  <section class="alt">
+    <div class="section-inner">
+      <h2 class="section-title">Supported Platforms</h2>
+      <div class="benefits-grid">
+        <div class="benefit-card"><div class="benefit-icon">▶</div><h3>YouTube</h3><p>Full HD and 4K downloads, playlists and shorts supported.</p></div>
+        <div class="benefit-card"><div class="benefit-icon">♪</div><h3>TikTok</h3><p>Download without watermark in original quality.</p></div>
+        <div class="benefit-card"><div class="benefit-icon">◉</div><h3>Instagram</h3><p>Reels, posts, and IGTV video downloads.</p></div>
+        <div class="benefit-card"><div class="benefit-icon">◈</div><h3>Facebook</h3><p>FB Reels and public video downloads.</p></div>
+        <div class="benefit-card"><div class="benefit-icon">𝕏</div><h3>Twitter / X</h3><p>Download videos and GIFs from tweets.</p></div>
+        <div class="benefit-card"><div class="benefit-icon">⭕</div><h3>Vimeo & More</h3><p>Dailymotion, Vimeo, and 50+ other platforms.</p></div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <div class="section-inner">
+      <h2 class="section-title" style="text-align:left;font-size:22px;margin-bottom:24px">FAQs</h2>
+      <div class="faq-wrap">
+        <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Can I download 4K YouTube videos?<span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="faq-a"><p>Yes — if the original was uploaded in 4K, you can download in 4K UHD. Quality options shown depend on what's available from the source.</p></div></div>
+        <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Can I download private videos?<span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="faq-a"><p>No — only publicly accessible videos can be downloaded. Private or age-restricted content is protected by platform policies.</p></div></div>
+        <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Is there a file size limit?<span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="faq-a"><p>No limit on our end. Make sure your device has enough storage. Very large 4K files may take longer to process.</p></div></div>
+      </div>
+      <div style="margin-top:40px"><p class="tool-label">Related Tools</p><div class="related-row"><span class="related-chip" onclick="showPage('mp3-downloader')">🎵 MP3 Downloader</span><span class="related-chip" onclick="showPage('video-to-audio')">🔊 Video to Audio</span><span class="related-chip" onclick="showPage('thumbnail-downloader')">🖼 Thumbnail Downloader</span><span class="related-chip" onclick="showPage('video-cutter')">✂️ Video Cutter</span></div></div>
+    </div>
+  </section>
+  <footer><div class="footer-inner"><p>© 2026 QuickSave. All rights reserved.</p><div style="display:flex;gap:20px"><a onclick="showPage('home')">Home</a><a>Privacy</a><a>Contact</a></div></div></footer>
+</div>
+
+
+<!-- ════════════════════════════════
+     PAGE: MP3 DOWNLOADER
+════════════════════════════════ -->
+<div id="page-mp3-downloader" class="page">
+  <div class="tool-page-hero">
+    <div class="breadcrumb"><button onclick="showPage('home')">Home</button><span>/</span><strong>MP3 Downloader</strong></div>
+    <span class="badge">Free Online Tool</span>
+    <h1>YouTube MP3 Downloader</h1>
+    <p>Convert and download audio from YouTube, TikTok, SoundCloud and any video platform. Up to 320kbps quality.</p>
+  </div>
+  <section>
+    <div class="tool-box">
+      <div class="tool-label">Video / Audio URL</div>
+      <div class="tool-url-row">
+        <input type="url" id="mp3-url" placeholder="Paste YouTube, SoundCloud, or any video link..." onkeydown="if(event.key==='Enter')analyzeUrl('mp3')"/>
+        <button class="analyze-btn" onclick="analyzeUrl('mp3')">Convert</button>
+      </div>
+      <div class="loading-bar" id="mp3-loading"><div class="loading-bar-inner" id="mp3-bar"></div></div>
+      <div class="options-panel" id="mp3-opts">
+        <div class="opts-label">Audio Bitrate</div>
+        <div class="quality-grid">
+          <div class="q-btn active" onclick="selectQ(this)"><span class="q-res">320</span><span class="q-sub">kbps</span></div>
+          <div class="q-btn" onclick="selectQ(this)"><span class="q-res">256</span><span class="q-sub">kbps</span></div>
+          <div class="q-btn" onclick="selectQ(this)"><span class="q-res">192</span><span class="q-sub">kbps</span></div>
+          <div class="q-btn" onclick="selectQ(this)"><span class="q-res">128</span><span class="q-sub">kbps</span></div>
+          <div class="q-btn" onclick="selectQ(this)"><span class="q-res">96</span><span class="q-sub">kbps</span></div>
+          <div class="q-btn" onclick="selectQ(this)"><span class="q-res">64</span><span class="q-sub">kbps</span></div>
+        </div>
+        <div class="opts-label">Format</div>
+        <div class="format-row">
+          <button class="fmt-btn active" onclick="selectFmt(this)">MP3</button>
+          <button class="fmt-btn" onclick="selectFmt(this)">M4A</button>
+          <button class="fmt-btn" onclick="selectFmt(this)">WAV</button>
+          <button class="fmt-btn" onclick="selectFmt(this)">FLAC</button>
+          <button class="fmt-btn" onclick="selectFmt(this)">OGG</button>
+        </div>
+        <button class="big-dl-btn" onclick="doDownload('mp3')">
+          <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          Download MP3
+        </button>
+      </div>
+    </div>
+  </section>
+  <section class="alt">
+    <div class="section-inner">
+      <h2 class="section-title">Why Use Our MP3 Downloader?</h2>
+      <div class="benefits-grid">
+        <div class="benefit-card"><div class="benefit-icon">🎵</div><h3>Up to 320kbps</h3><p>Crystal-clear audio quality — the highest MP3 bitrate possible.</p></div>
+        <div class="benefit-card"><div class="benefit-icon">⚡</div><h3>Instant Conversion</h3><p>Most tracks convert and download in under 3 seconds.</p></div>
+        <div class="benefit-card"><div class="benefit-icon">🏷</div><h3>ID3 Tags Included</h3><p>Title and thumbnail are embedded as album art automatically.</p></div>
+        <div class="benefit-card"><div class="benefit-icon">📱</div><h3>Works on Mobile</h3><p>Download MP3s directly to your phone — no PC needed.</p></div>
+        <div class="benefit-card"><div class="benefit-icon">🔒</div><h3>Private & Secure</h3><p>No URLs are logged. Files are deleted after download.</p></div>
+        <div class="benefit-card"><div class="benefit-icon">🆓</div><h3>Always Free</h3><p>No registration, no subscription, no limits.</p></div>
+      </div>
+    </div>
+  </section>
+  <section><div class="section-inner"><div style="margin-bottom:32px"><p class="tool-label">Related Tools</p><div class="related-row"><span class="related-chip" onclick="showPage('video-downloader')">📥 Video Downloader</span><span class="related-chip" onclick="showPage('video-to-audio')">🔊 Video to Audio</span><span class="related-chip" onclick="showPage('video-cutter')">✂️ Video Cutter</span></div></div></div></section>
+  <footer><div class="footer-inner"><p>© 2026 QuickSave. All rights reserved.</p><div style="display:flex;gap:20px"><a onclick="showPage('home')">Home</a><a>Privacy</a><a>Contact</a></div></div></footer>
+</div>
+
+
+<!-- ════════════════════════════════
+     PAGE: VIDEO TO AUDIO
+════════════════════════════════ -->
+<div id="page-video-to-audio" class="page">
+  <div class="tool-page-hero">
+    <div class="breadcrumb"><button onclick="showPage('home')">Home</button><span>/</span><strong>Video to Audio</strong></div>
+    <span class="badge">Free Online Converter</span>
+    <h1>Video to Audio Converter</h1>
+    <p>Convert any video URL or file to high-quality audio. Supports MP3, WAV, AAC, FLAC, and OGG output.</p>
+  </div>
+  <section>
+    <div class="tool-box">
+      <div style="display:flex;gap:8px;margin-bottom:20px">
+        <button class="fmt-btn active" id="vta-tab-url" onclick="vtaTab('url')">From URL</button>
+        <button class="fmt-btn" id="vta-tab-file" onclick="vtaTab('file')">Upload File</button>
+      </div>
+      <div id="vta-url-panel">
+        <div class="tool-label">Video URL</div>
+        <div class="tool-url-row">
+          <input type="url" id="vta-url" placeholder="Paste any video link..." onkeydown="if(event.key==='Enter')analyzeUrl('vta')"/>
+          <button class="analyze-btn" onclick="analyzeUrl('vta')">Convert</button>
+        </div>
+      </div>
+      <div id="vta-file-panel" style="display:none">
+        <div class="drop-area">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17,8 12,3 7,8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <p>Drag & drop your video file here</p>
+          <small>Supports MP4, AVI, MOV, MKV, WebM — max 500MB</small>
+          <button class="analyze-btn" style="margin-top:14px;width:auto">Browse Files</button>
+        </div>
+      </div>
+      <div class="loading-bar" id="vta-loading"><div class="loading-bar-inner" id="vta-bar"></div></div>
+      <div class="options-panel" id="vta-opts">
+        <div class="opts-label">Output Format</div>
+        <div class="format-row">
+          <button class="fmt-btn active" onclick="selectFmt(this)">MP3</button>
+          <button class="fmt-btn" onclick="selectFmt(this)">WAV</button>
+          <button class="fmt-btn" onclick="selectFmt(this)">AAC</button>
+          <button class="fmt-btn" onclick="selectFmt(this)">FLAC</button>
+          <button class="fmt-btn" onclick="selectFmt(this)">OGG</button>
+        </div>
+        <div class="opts-label" style="margin-top:16px">Quality</div>
+        <div class="quality-grid">
+          <div class="q-btn active" onclick="selectQ(this)"><span class="q-res">High</span><span class="q-sub">320kbps</span></div>
+          <div class="q-btn" onclick="selectQ(this)"><span class="q-res">Med</span><span class="q-sub">192kbps</span></div>
+          <div class="q-btn" onclick="selectQ(this)"><span class="q-res">Low</span><span class="q-sub">128kbps</span></div>
+        </div>
+        <button class="big-dl-btn" onclick="doDownload('vta')">
+          <svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 010 14.14"/></svg>
+          Convert & Download
+        </button>
+      </div>
+    </div>
+  </section>
+  <section><div class="section-inner"><div><p class="tool-label">Related Tools</p><div class="related-row"><span class="related-chip" onclick="showPage('mp3-downloader')">🎵 MP3 Downloader</span><span class="related-chip" onclick="showPage('video-downloader')">📥 Video Downloader</span><span class="related-chip" onclick="showPage('video-cutter')">✂️ Video Cutter</span></div></div></div></section>
+  <footer><div class="footer-inner"><p>© 2026 QuickSave. All rights reserved.</p><div style="display:flex;gap:20px"><a onclick="showPage('home')">Home</a><a>Privacy</a></div></div></footer>
+</div>
+
+
+<!-- ════════════════════════════════
+     PAGE: VIDEO CUTTER
+════════════════════════════════ -->
+<div id="page-video-cutter" class="page">
+  <div class="tool-page-hero">
+    <div class="breadcrumb"><button onclick="showPage('home')">Home</button><span>/</span><strong>Video Cutter</strong></div>
+    <span class="badge">Free Online Tool</span>
+    <h1>Online Video Cutter</h1>
+    <p>Trim and cut any video by setting start and end times. Download the clipped portion instantly — no software needed.</p>
+  </div>
+  <section>
+    <div class="tool-box">
+      <div class="tool-label">Video URL or Upload</div>
+      <div class="tool-url-row">
+        <input type="url" id="vc-url" placeholder="Paste video URL..." onkeydown="if(event.key==='Enter')analyzeUrl('vc')"/>
+        <button class="analyze-btn" onclick="analyzeUrl('vc')">Load</button>
+      </div>
+      <div class="loading-bar" id="vc-loading"><div class="loading-bar-inner" id="vc-bar"></div></div>
+      <div class="options-panel" id="vc-opts">
+        <div style="background:var(--bg-input);border:1px solid var(--border);border-radius:var(--r2);height:72px;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:13px;margin-bottom:20px">▶ Video timeline will appear here</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+          <div><div class="opts-label">Start Time</div><input type="text" id="vc-start" placeholder="0:00:00" style="width:100%;background:var(--bg-input);border:1.5px solid var(--border);border-radius:var(--r2);padding:11px 14px;font-size:15px;color:var(--text);font-family:var(--font);outline:none" oninput="vcCalc()"/></div>
+          <div><div class="opts-label">End Time</div><input type="text" id="vc-end" placeholder="0:05:00" style="width:100%;background:var(--bg-input);border:1.5px solid var(--border);border-radius:var(--r2);padding:11px 14px;font-size:15px;color:var(--text);font-family:var(--font);outline:none" oninput="vcCalc()"/></div>
+        </div>
+        <div id="vc-duration-info" style="display:none;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--r2);padding:12px 16px;margin-bottom:20px;font-size:13px;color:var(--text2)">Clip duration: <strong id="vc-clip-len" style="color:var(--blue)">—</strong></div>
+        <div class="opts-label">Output Format</div>
+        <div class="format-row" style="margin-bottom:20px">
+          <button class="fmt-btn active" onclick="selectFmt(this)">MP4</button>
+          <button class="fmt-btn" onclick="selectFmt(this)">WebM</button>
+          <button class="fmt-btn" onclick="selectFmt(this)">GIF</button>
+          <button class="fmt-btn" onclick="selectFmt(this)">MP3 (audio only)</button>
+        </div>
+        <button class="big-dl-btn" onclick="doDownload('vc')">
+          <svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/></svg>
+          Cut & Download
+        </button>
+      </div>
+    </div>
+  </section>
+  <section><div class="section-inner"><div><p class="tool-label">Related Tools</p><div class="related-row"><span class="related-chip" onclick="showPage('video-downloader')">📥 Video Downloader</span><span class="related-chip" onclick="showPage('video-to-audio')">🔊 Video to Audio</span><span class="related-chip" onclick="showPage('quality-converter')">⚙️ Quality Converter</span></div></div></div></section>
+  <footer><div class="footer-inner"><p>© 2026 QuickSave. All rights reserved.</p><div style="display:flex;gap:20px"><a onclick="showPage('home')">Home</a><a>Privacy</a></div></div></footer>
+</div>
+
+
+<!-- ════════════════════════════════
+     PAGE: THUMBNAIL DOWNLOADER
+════════════════════════════════ -->
+<div id="page-thumbnail-downloader" class="page">
+  <div class="tool-page-hero">
+    <div class="breadcrumb"><button onclick="showPage('home')">Home</button><span>/</span><strong>Thumbnail Downloader</strong></div>
+    <span class="badge">Free Online Tool</span>
+    <h1>YouTube Thumbnail Downloader</h1>
+    <p>Download any YouTube video thumbnail in maximum resolution — HD, Full HD, and 4K where available.</p>
+  </div>
+  <section>
+    <div class="tool-box">
+      <div class="tool-label">YouTube Video URL</div>
+      <div class="tool-url-row">
+        <input type="url" id="td-url" placeholder="Paste YouTube video URL..." onkeydown="if(event.key==='Enter')fetchThumbnails()"/>
+        <button class="analyze-btn" onclick="fetchThumbnails()">Fetch</button>
+      </div>
+      <div class="loading-bar" id="td-loading"><div class="loading-bar-inner" id="td-bar"></div></div>
+      <div class="options-panel" id="td-opts">
+        <div class="opts-label">Available Thumbnails — click to download</div>
+        <div class="thumb-grid">
+          <div class="thumb-option selected" onclick="downloadThumb('maxresdefault')">
+            <div class="thumb-preview" id="td-max"><img id="td-img-max" src="" alt="" style="display:none"/><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg></div>
+            <div class="thumb-info"><strong>Max Resolution</strong><span>1280 × 720</span></div>
+          </div>
+          <div class="thumb-option" onclick="downloadThumb('hqdefault')">
+            <div class="thumb-preview" id="td-hq"><img id="td-img-hq" src="" alt="" style="display:none"/><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg></div>
+            <div class="thumb-info"><strong>HQ Default</strong><span>480 × 360</span></div>
+          </div>
+          <div class="thumb-option" onclick="downloadThumb('mqdefault')">
+            <div class="thumb-preview"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg></div>
+            <div class="thumb-info"><strong>Medium Quality</strong><span>320 × 180</span></div>
+          </div>
+          <div class="thumb-option" onclick="downloadThumb('default')">
+            <div class="thumb-preview"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg></div>
+            <div class="thumb-info"><strong>Small</strong><span>120 × 90</span></div>
+          </div>
+        </div>
+        <button class="big-dl-btn" onclick="downloadThumb('maxresdefault')">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>
+          Download Max Resolution
+        </button>
+      </div>
+    </div>
+  </section>
+  <section><div class="section-inner"><div><p class="tool-label">Related Tools</p><div class="related-row"><span class="related-chip" onclick="showPage('video-downloader')">📥 Video Downloader</span><span class="related-chip" onclick="showPage('mp3-downloader')">🎵 MP3 Downloader</span></div></div></div></section>
+  <footer><div class="footer-inner"><p>© 2026 QuickSave. All rights reserved.</p><div style="display:flex;gap:20px"><a onclick="showPage('home')">Home</a><a>Privacy</a></div></div></footer>
+</div>
+
+
+<!-- ════════════════════════════════
+     PAGE: DURATION CALCULATOR
+════════════════════════════════ -->
+<div id="page-duration-calculator" class="page">
+  <div class="tool-page-hero">
+    <div class="breadcrumb"><button onclick="showPage('home')">Home</button><span>/</span><strong>Duration Calculator</strong></div>
+    <span class="badge">Free Online Tool</span>
+    <h1>Video Duration Calculator</h1>
+    <p>Calculate total duration across multiple videos, watch time stats, and estimated YouTube ad revenue.</p>
+  </div>
+  <section>
+    <div class="tool-box">
+      <div class="calc-grid">
+        <div class="calc-field"><label>Video Duration (mm:ss)</label><input type="text" id="dc-dur" placeholder="e.g. 10:30" oninput="calcDuration()"/></div>
+        <div class="calc-field"><label>Number of Videos</label><input type="number" id="dc-count" value="1" min="1" oninput="calcDuration()"/></div>
+        <div class="calc-field"><label>Views Per Month</label><input type="number" id="dc-views" placeholder="e.g. 50000" oninput="calcDuration()"/></div>
+        <div class="calc-field"><label>RPM Rate (US$)</label><input type="number" id="dc-rpm" value="3.50" step="0.10" oninput="calcDuration()"/></div>
+      </div>
+      <div class="calc-results">
+        <div class="calc-stat"><div class="calc-stat-n" id="dc-total">—</div><div class="calc-stat-l">Total Duration</div></div>
+        <div class="calc-stat"><div class="calc-stat-n" id="dc-monthly" style="color:#10b981">—</div><div class="calc-stat-l">Monthly Revenue</div></div>
+        <div class="calc-stat"><div class="calc-stat-n" id="dc-annual">—</div><div class="calc-stat-l">Annual Revenue</div></div>
+      </div>
+    </div>
+  </section>
+  <section><div class="section-inner"><div><p class="tool-label">Related Tools</p><div class="related-row"><span class="related-chip" onclick="showPage('video-downloader')">📥 Video Downloader</span><span class="related-chip" onclick="showPage('quality-converter')">⚙️ Quality Converter</span></div></div></div></section>
+  <footer><div class="footer-inner"><p>© 2026 QuickSave. All rights reserved.</p><div style="display:flex;gap:20px"><a onclick="showPage('home')">Home</a><a>Privacy</a></div></div></footer>
+</div>
+
+
+<!-- ════════════════════════════════
+     PAGE: QUALITY CONVERTER
+════════════════════════════════ -->
+<div id="page-quality-converter" class="page">
+  <div class="tool-page-hero">
+    <div class="breadcrumb"><button onclick="showPage('home')">Home</button><span>/</span><strong>Quality Converter</strong></div>
+    <span class="badge">Free Online Tool</span>
+    <h1>Video Quality Converter</h1>
+    <p>Reduce video resolution to decrease file size while keeping the best possible quality. 4K → 1080p → 720p and more.</p>
+  </div>
+  <section>
+    <div class="tool-box">
+      <div class="tool-label">Video URL or Upload</div>
+      <div class="tool-url-row">
+        <input type="url" id="qc-url" placeholder="Paste video URL or upload a file..." onkeydown="if(event.key==='Enter')analyzeUrl('qc')"/>
+        <button class="analyze-btn" onclick="analyzeUrl('qc')">Load</button>
+      </div>
+      <div class="loading-bar" id="qc-loading"><div class="loading-bar-inner" id="qc-bar"></div></div>
+      <div class="options-panel" id="qc-opts">
+        <div class="qc-row">
+          <div>
+            <div class="opts-label">Input Quality</div>
+            <div class="qc-box highlighted"><div class="qc-quality">4K</div><div class="qc-label">2160p · Detected</div></div>
+          </div>
+          <div class="qc-arrow"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg></div>
+          <div>
+            <div class="opts-label">Output Quality</div>
+            <div class="calc-field" style="margin:0">
+              <select id="qc-output" onchange="qcCalc()" style="background:var(--bg-input);border:1.5px solid var(--blue);border-radius:var(--r2);padding:14px;font-size:15px;color:var(--text);font-family:var(--font);outline:none;cursor:pointer;width:100%">
+                <option value="1080">1080p Full HD</option>
+                <option value="720" selected>720p HD</option>
+                <option value="480">480p SD</option>
+                <option value="360">360p</option>
+                <option value="240">240p</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="savings-row">
+          <div class="savings-stat"><div class="n" style="color:var(--text2)" id="qc-orig-size">1.4 GB</div><div class="l">Original Size</div></div>
+          <div class="savings-stat"><div class="n" style="color:#10b981" id="qc-new-size">~240 MB</div><div class="l">Output Size</div></div>
+          <div class="savings-stat"><div class="n" style="color:var(--blue)" id="qc-savings">83%</div><div class="l">Size Savings</div></div>
+        </div>
+        <button class="big-dl-btn" onclick="doDownload('qc')">
+          <svg viewBox="0 0 24 24"><polyline points="17,1 21,5 17,9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7,23 3,19 7,15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+          Convert & Download
+        </button>
+      </div>
+    </div>
+  </section>
+  <section><div class="section-inner"><div><p class="tool-label">Related Tools</p><div class="related-row"><span class="related-chip" onclick="showPage('video-downloader')">📥 Video Downloader</span><span class="related-chip" onclick="showPage('video-cutter')">✂️ Video Cutter</span><span class="related-chip" onclick="showPage('video-to-audio')">🔊 Video to Audio</span></div></div></div></section>
+  <footer><div class="footer-inner"><p>© 2026 QuickSave. All rights reserved.</p><div style="display:flex;gap:20px"><a onclick="showPage('home')">Home</a><a>Privacy</a></div></div></footer>
+</div>
+
+
+<!-- TOAST -->
+<div id="toast" style="display:none">
+  <svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>
+  <span id="toast-msg">Download started!</span>
+</div>
+
+
+<script>
+// ─── PAGE ROUTING ───────────────────────────────
+const ALL_PAGES = ['home','tools','video-downloader','mp3-downloader','video-to-audio','video-cutter','thumbnail-downloader','duration-calculator','quality-converter'];
+const NAV_IDS = { home:'nl-home', tools:'nl-tools' };
+
+function showPage(id) {
+  ALL_PAGES.forEach(p => {
+    const el = document.getElementById('page-' + p);
+    if (el) el.classList.remove('active');
+  });
+  const target = document.getElementById('page-' + id);
+  if (target) { target.classList.add('active'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+  // nav highlight
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  if (NAV_IDS[id]) document.getElementById(NAV_IDS[id]).classList.add('active');
+}
+
+function scrollToSection(id) {
+  showPage('home');
+  setTimeout(() => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  }, 100);
+}
+
+function focusInput() {
+  showPage('home');
+  setTimeout(() => { document.getElementById('hero-url').focus(); }, 100);
+}
+
+function toggleMobile() {
+  document.getElementById('mobile-nav').classList.toggle('open');
+}
+
+// ─── FAQ ────────────────────────────────────────
+function toggleFaq(btn) {
+  const ans = btn.nextElementSibling;
+  const isOpen = ans.style.maxHeight && ans.style.maxHeight !== '0px';
+  // close all in same list
+  const list = btn.closest('div');
+  list.querySelectorAll('.faq-a').forEach(a => { a.style.maxHeight = '0px'; });
+  list.querySelectorAll('.faq-q').forEach(q => q.classList.remove('open'));
+  if (!isOpen) {
+    ans.style.maxHeight = ans.scrollHeight + 'px';
+    btn.classList.add('open');
+  }
+}
+
+// ─── QUALITY / FORMAT SELECTORS ─────────────────
+function selectQ(el) {
+  el.closest('.quality-grid').querySelectorAll('.q-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+function selectFmt(el) {
+  el.closest('.format-row, div').querySelectorAll('.fmt-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ─── LOADING BAR ANIMATION ──────────────────────
+function runLoadingBar(prefix, cb) {
+  const bar = document.getElementById(prefix + '-bar');
+  const wrap = document.getElementById(prefix + '-loading');
+  if (!bar || !wrap) { cb && cb(); return; }
+  wrap.style.display = 'block';
+  bar.style.width = '0%';
+  let pct = 0;
+  const iv = setInterval(() => {
+    pct += Math.random() * 18 + 5;
+    if (pct >= 90) { pct = 90; clearInterval(iv); }
+    bar.style.width = pct + '%';
+  }, 120);
+  setTimeout(() => {
+    clearInterval(iv);
+    bar.style.width = '100%';
+    setTimeout(() => { wrap.style.display = 'none'; bar.style.width = '0%'; cb && cb(); }, 300);
+  }, 1400);
+}
+
+// ─── DETECT URL PLATFORM ────────────────────────
+function detectPlatform(url) {
+  if (!url) return { name: 'Video', icon: '▶' };
+  if (url.includes('youtube') || url.includes('youtu.be')) return { name: 'YouTube', icon: '▶' };
+  if (url.includes('tiktok')) return { name: 'TikTok', icon: '♪' };
+  if (url.includes('instagram')) return { name: 'Instagram', icon: '◉' };
+  if (url.includes('facebook') || url.includes('fb.')) return { name: 'Facebook', icon: '◈' };
+  if (url.includes('twitter') || url.includes('x.com')) return { name: 'Twitter/X', icon: '𝕏' };
+  if (url.includes('vimeo')) return { name: 'Vimeo', icon: '⭕' };
+  return { name: 'Video', icon: '▶' };
+}
+
+// ─── ANALYZE URL ────────────────────────────────
+function analyzeUrl(prefix) {
+  const input = document.getElementById(prefix + '-url');
+  if (!input) return;
+  const url = input.value.trim();
+  if (!url) { shake(input); return; }
+  const opts = document.getElementById(prefix + '-opts');
+  runLoadingBar(prefix, () => {
+    if (opts) { opts.style.display = 'block'; }
+    // populate preview for vd
+    if (prefix === 'vd') {
+      const plat = detectPlatform(url);
+      const titleEl = document.getElementById('vd-title');
+      const metaEl = document.getElementById('vd-meta');
+      if (titleEl) titleEl.textContent = 'Video ready — ' + plat.name;
+      if (metaEl) metaEl.textContent = plat.icon + ' Detected from URL · Processing complete';
+    }
+  });
+}
+
+// ─── HERO DOWNLOAD ──────────────────────────────
+function heroDownload() {
+  const url = document.getElementById('hero-url').value.trim();
+  if (!url) { shake(document.getElementById('hero-box')); return; }
+  showPage('video-downloader');
+  setTimeout(() => {
+    const inp = document.getElementById('vd-url');
+    if (inp) { inp.value = url; analyzeUrl('vd'); }
+  }, 200);
+}
+
+// ─── SHAKE ANIMATION ────────────────────────────
+function shake(el) {
+  el.style.animation = 'none';
+  el.style.borderColor = '#ef4444';
+  el.style.boxShadow = '0 0 0 3px rgba(239,68,68,0.15)';
+  setTimeout(() => { el.style.borderColor = ''; el.style.boxShadow = ''; }, 1800);
+}
+
+// ─── DOWNLOAD TRIGGER ───────────────────────────
+// NOTE: Real downloads require a server-side backend (yt-dlp, etc.)
+// This demo shows the UI flow. To make it real, replace doDownload()
+// with an API call to your backend endpoint.
+function doDownload(prefix) {
+  const inputEl = document.getElementById(prefix + '-url');
+  const url = inputEl ? inputEl.value.trim() : '';
+  // Show processing state
+  const btn = event.currentTarget;
+  const origText = btn.innerHTML;
+  btn.innerHTML = '<svg viewBox="0 0 24 24" style="animation:spin 1s linear infinite" fill="none" stroke="white" stroke-width="2" width="20" height="20"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Processing...';
+  btn.disabled = true;
+  setTimeout(() => {
+    btn.innerHTML = origText;
+    btn.disabled = false;
+    showToast('✓ Download ready! Connect a backend to serve real files.');
+  }, 2000);
+}
+
+// ─── VIDEO CUTTER CALC ──────────────────────────
+function vcCalc() {
+  const s = document.getElementById('vc-start').value;
+  const e = document.getElementById('vc-end').value;
+  function toSec(t) {
+    const p = t.split(':').reverse();
+    return (parseInt(p[0])||0) + (parseInt(p[1])||0)*60 + (parseInt(p[2])||0)*3600;
+  }
+  if (s && e) {
+    const diff = toSec(e) - toSec(s);
+    if (diff > 0) {
+      const m = Math.floor(diff / 60), sec = diff % 60;
+      document.getElementById('vc-clip-len').textContent = m + 'm ' + sec + 's';
+      document.getElementById('vc-duration-info').style.display = 'block';
+    }
+  }
+}
+
+// ─── DURATION CALCULATOR ────────────────────────
+function calcDuration() {
+  const dur = document.getElementById('dc-dur').value;
+  const count = parseInt(document.getElementById('dc-count').value) || 1;
+  const views = parseInt(document.getElementById('dc-views').value) || 0;
+  const rpm = parseFloat(document.getElementById('dc-rpm').value) || 3.5;
+  let secs = 0;
+  if (dur) {
+    const p = dur.split(':').reverse();
+    secs = (parseInt(p[0])||0) + (parseInt(p[1])||0)*60 + (parseInt(p[2])||0)*3600;
+    secs *= count;
+  }
+  if (secs > 0) {
+    const h = Math.floor(secs/3600), m = Math.floor((secs%3600)/60), s = secs%60;
+    document.getElementById('dc-total').textContent = h > 0 ? h+'h '+m+'m' : m+'m '+s+'s';
+  } else {
+    document.getElementById('dc-total').textContent = '—';
+  }
+  if (views > 0) {
+    const monthly = (views / 1000) * rpm;
+    document.getElementById('dc-monthly').textContent = '$' + monthly.toFixed(2);
+    document.getElementById('dc-annual').textContent = '$' + (monthly * 12).toFixed(0);
+  } else {
+    document.getElementById('dc-monthly').textContent = '—';
+    document.getElementById('dc-annual').textContent = '—';
+  }
+}
+
+// ─── QUALITY CONVERTER CALC ─────────────────────
+function qcCalc() {
+  const out = document.getElementById('qc-output').value;
+  const sizes = { '1080': ['~380 MB', '73%'], '720': ['~240 MB', '83%'], '480': ['~120 MB', '91%'], '360': ['~70 MB', '95%'], '240': ['~40 MB', '97%'] };
+  const [sz, pct] = sizes[out] || ['~240 MB', '83%'];
+  document.getElementById('qc-new-size').textContent = sz;
+  document.getElementById('qc-savings').textContent = pct;
+}
+
+// ─── THUMBNAIL DOWNLOADER ───────────────────────
+function fetchThumbnails() {
+  const url = document.getElementById('td-url').value.trim();
+  if (!url) { shake(document.getElementById('td-url')); return; }
+  // Extract YouTube video ID
+  const match = url.match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([a-zA-Z0-9_-]{11})/);
+  runLoadingBar('td', () => {
+    const opts = document.getElementById('td-opts');
+    if (opts) opts.style.display = 'block';
+    if (match) {
+      const vid = match[1];
+      const img1 = document.getElementById('td-img-max');
+      const img2 = document.getElementById('td-img-hq');
+      const prev1 = document.getElementById('td-max');
+      const prev2 = document.getElementById('td-hq');
+      // Load real YouTube thumbnails
+      if (img1) { img1.src = 'https://i.ytimg.com/vi/' + vid + '/maxresdefault.jpg'; img1.style.display = 'block'; img1.onerror = () => { img1.style.display = 'none'; }; }
+      if (img2) { img2.src = 'https://i.ytimg.com/vi/' + vid + '/hqdefault.jpg'; img2.style.display = 'block'; img2.onerror = () => { img2.style.display = 'none'; }; }
+    }
+  });
+}
+
+function downloadThumb(quality) {
+  const url = document.getElementById('td-url').value.trim();
+  const match = url.match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([a-zA-Z0-9_-]{11})/);
+  if (match) {
+    const imgUrl = 'https://i.ytimg.com/vi/' + match[1] + '/' + quality + '.jpg';
+    const a = document.createElement('a');
+    a.href = imgUrl; a.download = 'thumbnail-' + quality + '.jpg'; a.target = '_blank';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    showToast('Downloading thumbnail...');
+  } else {
+    showToast('Paste a valid YouTube URL first');
+  }
+}
+
+// ─── VTA TAB SWITCH ─────────────────────────────
+function vtaTab(tab) {
+  document.getElementById('vta-url-panel').style.display = tab === 'url' ? 'block' : 'none';
+  document.getElementById('vta-file-panel').style.display = tab === 'file' ? 'block' : 'none';
+  document.getElementById('vta-tab-url').classList.toggle('active', tab === 'url');
+  document.getElementById('vta-tab-file').classList.toggle('active', tab === 'file');
+  if (tab === 'url') analyzeUrl('vta');
+}
+
+// ─── TOAST ──────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  const m = document.getElementById('toast-msg');
+  if (m) m.textContent = msg;
+  t.style.display = 'flex';
+  t.style.animation = 'slideUp .3s ease';
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => { t.style.display = 'none'; }, 3500);
+}
+
+// ─── CSS FOR SPIN ────────────────────────────────
+const style = document.createElement('style');
+style.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
+document.head.appendChild(style);
+
+// ─── INIT ────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  // Close mobile nav on outside click
+  document.addEventListener('click', e => {
+    const mn = document.getElementById('mobile-nav');
+    const btn = document.getElementById('mobile-menu-btn');
+    if (mn.classList.contains('open') && !mn.contains(e.target) && !btn.contains(e.target)) {
+      mn.classList.remove('open');
+    }
+  });
+});
+</script>
+</body>
+</html>

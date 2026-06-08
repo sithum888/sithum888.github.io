@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>QuickSave — Download Videos in Seconds</title>
+<meta name="description" content="Download YouTube, TikTok, Facebook Reels, and Instagram videos instantly. Free, fast, no registration."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0e1a;--bg2:#0d1220;--card:#111827;--card2:#141d2e;
+  --inp:#0d1628;--b1:rgba(255,255,255,0.08);--b2:rgba(255,255,255,0.13);
+  --t:#f0f4ff;--t2:#8b9fc0;--t3:#4a5a7a;
+  --blue:#3b82f6;--blue2:#2563eb;--bdim:rgba(59,130,246,0.15);
+  --green:#10b981;--red:#ef4444;
+  --f:'Inter',system-ui,sans-serif;--r:8px;--r2:12px;--r3:16px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--t);font-family:var(--f);font-size:15px;line-height:1.6;min-height:100vh}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(13,18,32,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--b1);height:60px;display:flex;align-items:center;padding:0 5%}
+.nav-in{max-width:1100px;margin:0 auto;width:100%;display:flex;align-items:center}
+.logo{display:flex;align-items:center;gap:9px;cursor:pointer;font-size:17px;font-weight:700;color:var(--t);margin-right:36px;user-select:none}
+.logo-icon{width:31px;height:31px;background:var(--blue);border-radius:7px;display:flex;align-items:center;justify-content:center}
+.logo-icon svg{width:16px;height:16px;fill:white}
+.nav-links{display:flex;align-items:center;gap:2px;flex:1}
+.nl{background:none;border:none;color:var(--t2);font-family:var(--f);font-size:14px;padding:6px 13px;border-radius:6px;cursor:pointer;transition:all .15s;position:relative}
+.nl:hover{color:var(--t);background:rgba(255,255,255,0.05)}
+.nl.active{color:var(--t)}
+.nl.active::after{content:'';position:absolute;bottom:-1px;left:13px;right:13px;height:2px;background:var(--blue);border-radius:1px}
+.nav-cta{background:var(--blue);color:white;border:none;padding:8px 18px;border-radius:8px;font-size:14px;font-weight:600;font-family:var(--f);cursor:pointer;transition:background .15s;margin-left:auto}
+.nav-cta:hover{background:var(--blue2)}
+#mob-btn{display:none;background:none;border:none;color:var(--t2);cursor:pointer;padding:8px;margin-left:auto}
+#mob-nav{display:none;position:fixed;top:60px;left:0;right:0;bottom:0;background:rgba(10,14,26,.97);z-index:150;flex-direction:column;padding:20px;gap:2px;overflow-y:auto}
+#mob-nav.open{display:flex}
+#mob-nav button{background:none;border:none;color:var(--t2);font-family:var(--f);font-size:16px;font-weight:500;padding:14px 8px;border-bottom:1px solid var(--b1);cursor:pointer;text-align:left;transition:color .15s}
+#mob-nav button:hover{color:var(--blue)}
+
+/* PAGES */
+.page{display:none;padding-top:60px}
+.page.active{display:block}
+
+/* HERO */
+.hero{background:linear-gradient(180deg,#0d1628 0%,var(--bg) 100%);padding:80px 5% 72px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-120px;left:50%;transform:translateX(-50%);width:700px;height:500px;background:radial-gradient(ellipse,rgba(59,130,246,.13) 0%,transparent 60%);pointer-events:none}
+.hero h1{font-size:clamp(36px,6.5vw,68px);font-weight:800;letter-spacing:-2px;line-height:1.05;margin-bottom:18px;position:relative}
+.hero p{color:var(--t2);font-size:17px;max-width:520px;margin:0 auto 40px;line-height:1.75;position:relative}
+.url-box{max-width:680px;margin:0 auto 24px;background:var(--card);border:1.5px solid var(--b2);border-radius:13px;display:flex;align-items:center;padding:5px 5px 5px 16px;gap:10px;transition:border-color .2s,box-shadow .2s;position:relative}
+.url-box:focus-within{border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,130,246,.12)}
+.url-ico{color:var(--t3);flex-shrink:0}
+.url-ico svg{width:17px;height:17px;display:block;stroke:currentColor;fill:none;stroke-width:2}
+.url-in{flex:1;background:none;border:none;outline:none;font-family:var(--f);font-size:15px;color:var(--t);min-width:0}
+.url-in::placeholder{color:var(--t3)}
+.dl-btn{background:var(--blue);color:white;border:none;padding:11px 20px;border-radius:8px;font-size:14px;font-weight:600;font-family:var(--f);cursor:pointer;display:flex;align-items:center;gap:7px;white-space:nowrap;transition:background .15s;flex-shrink:0}
+.dl-btn:hover{background:var(--blue2)}
+.dl-btn svg{width:15px;height:15px;stroke:white;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.pills{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:20px;position:relative}
+.pill{background:rgba(255,255,255,.05);border:1px solid var(--b1);border-radius:100px;padding:5px 13px;font-size:12.5px;color:var(--t2);display:flex;align-items:center;gap:5px}
+.pill svg{width:12px;height:12px;stroke:var(--green);fill:none;stroke-width:2.5}
+
+/* SECTIONS */
+section{padding:72px 5%}
+.sec{max-width:1100px;margin:0 auto}
+.alt{background:#0c1020}
+.stitle{font-size:clamp(22px,3.5vw,36px);font-weight:800;letter-spacing:-.5px;text-align:center;margin-bottom:44px}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--b1);border:1px solid var(--b1);border-radius:var(--r2);overflow:hidden}
+.stat{background:var(--card);padding:26px 16px;text-align:center}
+.stat-n{font-size:30px;font-weight:800;color:var(--blue);line-height:1;letter-spacing:-1px}
+.stat-l{font-size:12px;color:var(--t3);margin-top:5px}
+
+/* FEATURE CARDS */
+.fg{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.fc{background:var(--card);border:1px solid var(--b1);border-radius:var(--r3);padding:24px 20px;cursor:pointer;transition:border-color .2s,background .2s}
+.fc:hover{border-color:rgba(59,130,246,.35);background:var(--card2)}
+.fi{width:40px;height:40px;border-radius:10px;background:var(--bdim);display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.fi svg{width:20px;height:20px;stroke:var(--blue);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.fc h3{font-size:15px;font-weight:600;margin-bottom:7px}
+.fc p{font-size:13px;color:var(--t2);line-height:1.6}
+
+/* STEPS */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.step{background:var(--card);border:1px solid var(--b1);padding:30px 26px}
+.step:first-child{border-radius:var(--r3) 0 0 var(--r3)}
+.step:last-child{border-radius:0 var(--r3) var(--r3) 0}
+.step-n{font-size:40px;font-weight:900;color:var(--blue);display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
+.step-n svg{width:32px;height:32px;stroke:var(--blue);fill:none;stroke-width:1.5;opacity:.5;stroke-linecap:round;stroke-linejoin:round}
+.step h3{font-size:17px;font-weight:700;margin-bottom:8px}
+.step p{font-size:13.5px;color:var(--t2);line-height:1.65}
+
+/* TOOLS GRID */
+.tg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.tc{background:var(--card);border:1px solid var(--b1);border-radius:var(--r3);padding:16px 18px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:13px}
+.tc:hover{border-color:rgba(59,130,246,.35);background:var(--card2);transform:translateY(-1px)}
+.tc-icon{width:34px;height:34px;border-radius:8px;background:var(--bdim);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tc-icon svg{width:17px;height:17px;stroke:var(--blue);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tc-t{flex:1;min-width:0}
+.tc-t h4{font-size:13.5px;font-weight:600;line-height:1.3;color:var(--t)}
+.tc-t span{font-size:11px;color:var(--t3)}
+.tc-arr svg{width:14px;height:14px;stroke:var(--blue);fill:none;stroke-width:2;opacity:.6}
+
+/* BENEFITS */
+.bg2{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.bc{background:var(--card);border:1px solid var(--b1);border-radius:var(--r3);padding:22px 18px}
+.bi{font-size:22px;margin-bottom:10px}
+.bc h3{font-size:15px;font-weight:600;margin-bottom:6px}
+.bc p{font-size:13px;color:var(--t2);line-height:1.65}
+
+/* FAQ */
+.fq-wrap{max-width:760px;margin:0 auto}
+.fq{border-bottom:1px solid var(--b1)}
+.fq-q{width:100%;background:none;border:none;text-align:left;padding:17px 0;font-size:15px;font-weight:500;color:var(--t);font-family:var(--f);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;transition:color .15s}
+.fq-q:hover{color:var(--blue)}
+.fq-icon{width:18px;height:18px;flex-shrink:0;transition:transform .3s;color:var(--t3)}
+.fq-icon svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2}
+.fq-q.open .fq-icon{transform:rotate(45deg);color:var(--blue)}
+.fq-a{overflow:hidden;max-height:0;transition:max-height .35s ease}
+.fq-a p{padding-bottom:16px;color:var(--t2);font-size:14px;line-height:1.75}
+
+/* TOOL HERO */
+.tool-hero{background:linear-gradient(180deg,#0d1628 0%,var(--bg) 100%);padding:56px 5% 48px;text-align:center;border-bottom:1px solid var(--b1);position:relative;overflow:hidden}
+.tool-hero::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:500px;height:400px;background:radial-gradient(ellipse,rgba(59,130,246,.1) 0%,transparent 60%);pointer-events:none}
+.bcw{display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:20px}
+.bcw button{background:none;border:none;color:var(--t3);font-family:var(--f);font-size:13px;cursor:pointer;transition:color .15s}
+.bcw button:hover{color:var(--blue)}
+.bcw span{color:var(--t3);font-size:13px}
+.badge{display:inline-block;background:var(--bdim);border:1px solid rgba(59,130,246,.2);color:var(--blue);font-size:12px;font-weight:500;padding:4px 12px;border-radius:100px;margin-bottom:18px}
+.tool-hero h1{font-size:clamp(26px,5vw,52px);font-weight:800;letter-spacing:-1px;margin-bottom:12px;position:relative}
+.tool-hero p{color:var(--t2);font-size:16px;max-width:500px;margin:0 auto;line-height:1.7;position:relative}
+
+/* TOOL BOX */
+.tbox{background:var(--card);border:1px solid var(--b1);border-radius:var(--r3);padding:28px;max-width:740px;margin:0 auto}
+.tlabel{font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--t3);margin-bottom:9px}
+.t-row{display:flex;gap:10px;margin-bottom:16px}
+.t-row input{flex:1;background:var(--inp);border:1.5px solid var(--b1);border-radius:var(--r2);padding:11px 14px;font-size:14.5px;color:var(--t);font-family:var(--f);outline:none;transition:border-color .2s,box-shadow .2s;min-width:0}
+.t-row input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,130,246,.1)}
+.t-row input::placeholder{color:var(--t3)}
+.abtn{background:var(--blue);color:white;border:none;padding:11px 18px;border-radius:var(--r2);font-size:14px;font-weight:600;font-family:var(--f);cursor:pointer;white-space:nowrap;transition:background .15s;flex-shrink:0}
+.abtn:hover{background:var(--blue2)}
+.lbar{height:3px;background:var(--inp);border-radius:2px;overflow:hidden;margin-bottom:16px;display:none}
+.lbar-in{height:100%;width:0%;background:var(--blue);border-radius:2px;transition:width .08s linear}
+.opts{display:none}
+.ol{font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--t3);margin-bottom:10px}
+.qg{display:grid;grid-template-columns:repeat(auto-fill,minmax(82px,1fr));gap:8px;margin-bottom:18px}
+.qb{background:var(--inp);border:1.5px solid var(--b1);border-radius:var(--r2);padding:11px 8px;text-align:center;cursor:pointer;transition:all .15s;font-family:var(--f)}
+.qb:hover,.qb.active{border-color:var(--blue);background:rgba(59,130,246,.08)}
+.qb .qr{font-size:15px;font-weight:700;display:block;line-height:1.2}
+.qb .qs{font-size:11px;color:var(--t3);display:block;margin-top:2px}
+.qb.active .qr{color:var(--blue)}
+.fr{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.fb{background:var(--inp);border:1.5px solid var(--b1);border-radius:var(--r);padding:8px 16px;font-size:13px;font-weight:500;cursor:pointer;color:var(--t2);font-family:var(--f);transition:all .15s}
+.fb:hover,.fb.active{border-color:var(--blue);color:var(--blue);background:rgba(59,130,246,.08)}
+.big-btn{width:100%;background:var(--blue);color:white;border:none;padding:14px;border-radius:var(--r2);font-size:16px;font-weight:700;font-family:var(--f);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:background .15s;margin-top:6px}
+.big-btn:hover{background:var(--blue2)}
+.big-btn:disabled{background:#1e3a5f;cursor:not-allowed}
+.big-btn svg{width:19px;height:19px;stroke:white;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* STATUS */
+.status{padding:12px 16px;border-radius:var(--r2);margin-bottom:14px;font-size:14px;display:none;align-items:center;gap:8px}
+.status.err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:#fca5a5;display:flex}
+.status.ok{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);color:#6ee7b7;display:flex}
+.status.info{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.2);color:#93c5fd;display:flex}
+
+/* VIDEO PREVIEW */
+.vprev{background:var(--inp);border:1px solid var(--b1);border-radius:var(--r2);padding:14px;display:flex;gap:14px;align-items:center;margin-bottom:18px}
+.vthumb{width:90px;height:56px;background:var(--bg);border-radius:6px;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.vthumb img{width:100%;height:100%;object-fit:cover}
+.vthumb svg{width:24px;height:24px;stroke:var(--t3);fill:none;stroke-width:1.5}
+.vinfo h4{font-size:14px;font-weight:600;margin-bottom:4px;line-height:1.4}
+.vinfo span{font-size:12px;color:var(--t3)}
+
+/* THUMBNAIL */
+.thg{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
+.tho{background:var(--inp);border:1.5px solid var(--b1);border-radius:var(--r2);overflow:hidden;cursor:pointer;transition:border-color .2s}
+.tho:hover,.tho.sel{border-color:var(--blue)}
+.th-img{height:96px;background:linear-gradient(135deg,#141d2e,#0a0e1a);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.th-img img{width:100%;height:100%;object-fit:cover}
+.th-img svg{width:28px;height:28px;stroke:var(--t3);fill:none;stroke-width:1.5}
+.th-meta{padding:9px 12px;display:flex;justify-content:space-between;align-items:center}
+.th-meta strong{font-size:13px;color:var(--t)}
+.th-meta span{font-size:11px;color:var(--t3)}
+
+/* CALC */
+.cg{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+.cf label{display:block;font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--t3);margin-bottom:7px}
+.cf input,.cf select{width:100%;background:var(--inp);border:1.5px solid var(--b1);border-radius:var(--r2);padding:11px 13px;font-size:15px;color:var(--t);font-family:var(--f);outline:none;transition:border-color .2s}
+.cf input:focus,.cf select:focus{border-color:var(--blue)}
+.cf select option{background:var(--card)}
+.cr{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.cs{background:var(--inp);border:1px solid var(--b1);border-radius:var(--r2);padding:14px;text-align:center}
+.cs-n{font-size:22px;font-weight:800;color:var(--blue);letter-spacing:-.5px}
+.cs-l{font-size:11px;color:var(--t3);margin-top:4px}
+
+/* RELATED */
+.rel-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.rel{background:var(--card);border:1px solid var(--b1);border-radius:var(--r);padding:7px 13px;font-size:13px;color:var(--t2);cursor:pointer;transition:all .15s;font-family:var(--f)}
+.rel:hover{border-color:var(--blue);color:var(--blue)}
+
+/* QC */
+.qc-row{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;margin-bottom:16px}
+.qc-box{background:var(--inp);border:1.5px solid var(--b1);border-radius:var(--r2);padding:14px;text-align:center}
+.qc-box.hl{border-color:var(--blue)}
+.qc-q{font-size:26px;font-weight:800;color:var(--blue);line-height:1}
+.qc-l{font-size:11px;color:var(--t3);margin-top:3px}
+.qc-arr svg{width:22px;height:22px;stroke:var(--t3);fill:none;stroke-width:2}
+.srow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.ss{background:var(--inp);border:1px solid var(--b1);border-radius:var(--r2);padding:12px;text-align:center}
+.ss .n{font-size:18px;font-weight:700;margin-bottom:3px}
+.ss .l{font-size:11px;color:var(--t3)}
+.drop{border:2px dashed var(--b2);border-radius:var(--r2);padding:36px 20px;text-align:center;color:var(--t2);cursor:pointer;margin-bottom:14px}
+.drop:hover{border-color:var(--blue)}
+.drop svg{width:36px;height:36px;stroke:var(--t3);fill:none;stroke-width:1.2;margin-bottom:10px;display:block;margin-left:auto;margin-right:auto}
+.drop p{font-size:14px}
+.drop small{font-size:12px;color:var(--t3);display:block;margin-top:5px}
+
+/* TOAST */
+#toast{position:fixed;bottom:24px;right:24px;z-index:1000;padding:13px 20px;border-radius:var(--r2);font-weight:600;font-size:13.5px;display:none;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+#toast.ok{background:var(--green);color:white}
+#toast.err{background:var(--red);color:white}
+#toast.info{background:var(--blue);color:white}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* FOOTER */
+footer{border-top:1px solid var(--b1);padding:22px 5%}
+.foot-in{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+footer p{color:var(--t3);font-size:13px}
+.foot-links{display:flex;gap:18px}
+.foot-links a{color:var(--t3);font-size:13px;cursor:pointer;text-decoration:none}
+.foot-links a:hover{color:var(--t2)}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .fg{grid-template-columns:repeat(2,1fr)}
+  .tg{grid-template-columns:repeat(2,1fr)}
+  .steps{grid-template-columns:1fr;gap:2px}
+  .step:first-child{border-radius:var(--r3) var(--r3) 0 0}
+  .step:last-child{border-radius:0 0 var(--r3) var(--r3)}
+  .bg2{grid-template-columns:repeat(2,1fr)}
+  .stats{grid-template-columns:repeat(3,1fr)}
+  .cg{grid-template-columns:1fr}
+  .cr{grid-template-columns:1fr 1fr}
+}
+@media(max-width:640px){
+  nav{padding:0 4%}
+  .nav-links{display:none}
+  #mob-btn{display:flex}
+  .url-box{flex-direction:column;padding:10px;align-items:stretch}
+  .dl-btn{justify-content:center}
+  .fg{grid-template-columns:1fr}
+  .tg{grid-template-columns:1fr}
+  .bg2{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .tbox{padding:16px}
+  .qg{grid-template-columns:repeat(3,1fr)}
+  .thg{grid-template-columns:1fr}
+  .qc-row{grid-template-columns:1fr auto 1fr}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-in">
+    <div class="logo" onclick="go('home')">
+      <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+      QuickSave
+    </div>
+    <div class="nav-links">
+      <button class="nl active" id="nl-home" onclick="go('home')">Home</button>
+      <button class="nl" id="nl-tools" onclick="go('tools')">Tools</button>
+      <button class="nl" onclick="goTo('how')">How It Works</button>
+      <button class="nl" onclick="goTo('faq')">FAQ</button>
+    </div>
+    <button class="nav-cta" onclick="focusHero()">Get Started</button>
+    <button id="mob-btn" onclick="toggleMob()">
+      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</nav>
+<div id="mob-nav">
+  <button onclick="go('home');toggleMob()">🏠 Home</button>
+  <button onclick="go('video-downloader');toggleMob()">📥 Video Downloader</button>
+  <button onclick="go('mp3-downloader');toggleMob()">🎵 MP3 Downloader</button>
+  <button onclick="go('video-to-audio');toggleMob()">🔊 Video to Audio</button>
+  <button onclick="go('video-cutter');toggleMob()">✂️ Video Cutter</button>
+  <button onclick="go('thumbnail-downloader');toggleMob()">🖼 Thumbnail Downloader</button>
+  <button onclick="go('duration-calculator');toggleMob()">⏱ Duration Calculator</button>
+  <button onclick="go('quality-converter');toggleMob()">⚙️ Quality Converter</button>
+</div>
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <h1>Download Videos in Seconds</h1>
+    <p>Paste any YouTube, TikTok, Facebook Reel, or Instagram link and download instantly in your preferred quality.</p>
+    <div class="url-box" id="hero-box">
+      <span class="url-ico"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></span>
+      <input class="url-in" id="hero-url" type="url" placeholder="Paste your video link here..." onkeydown="if(event.key==='Enter')heroGo()"/>
+      <button class="dl-btn" onclick="heroGo()">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download Now
+      </button>
+    </div>
+    <div class="pills">
+      <span class="pill"><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>HD Downloads</span>
+      <span class="pill"><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Multiple Qualities</span>
+      <span class="pill"><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>MP3 Conversion</span>
+      <span class="pill"><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>No Registration</span>
+      <span class="pill"><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Fast Processing</span>
+    </div>
+  </div>
+  <section style="padding:0 5%"><div class="sec">
+    <div class="stats">
+      <div class="stat"><div class="stat-n">50M+</div><div class="stat-l">Downloads</div></div>
+      <div class="stat"><div class="stat-n">4.9★</div><div class="stat-l">Rating</div></div>
+      <div class="stat"><div class="stat-n">1.2s</div><div class="stat-l">Avg Speed</div></div>
+      <div class="stat"><div class="stat-n">8+</div><div class="stat-l">Platforms</div></div>
+      <div class="stat"><div class="stat-n">100%</div><div class="stat-l">Free</div></div>
+    </div>
+  </div></section>
+  <section><div class="sec">
+    <h2 class="stitle">Powerful Features</h2>
+    <div class="fg">
+      <div class="fc" onclick="go('video-downloader')"><div class="fi"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div><h3>Video Downloader</h3><p>Download from YouTube, TikTok, Instagram & Facebook in HD.</p></div>
+      <div class="fc" onclick="go('mp3-downloader')"><div class="fi"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div><h3>MP3 Downloader</h3><p>Extract crisp audio tracks as MP3 files instantly.</p></div>
+      <div class="fc" onclick="go('video-to-audio')"><div class="fi"><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 010 7.07"/></svg></div><h3>Video to Audio</h3><p>Convert any video into pure audio instantly.</p></div>
+      <div class="fc" onclick="go('thumbnail-downloader')"><div class="fi"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg></div><h3>Thumbnail Downloader</h3><p>Download high-res YouTube thumbnails fast.</p></div>
+      <div class="fc" onclick="go('video-cutter')"><div class="fi"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/></svg></div><h3>Video Cutter</h3><p>Trim and clip videos to perfect length.</p></div>
+      <div class="fc" onclick="go('duration-calculator')"><div class="fi"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg></div><h3>Duration Calculator</h3><p>Calculate runtime and ad revenue estimates.</p></div>
+      <div class="fc" onclick="go('quality-converter')"><div class="fi"><svg viewBox="0 0 24 24"><polyline points="17,1 21,5 17,9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7,23 3,19 7,15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg></div><h3>Quality Converter</h3><p>Switch resolutions from 360p to 4K.</p></div>
+      <div class="fc" onclick="go('video-downloader')"><div class="fi"><svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16,6 12,2 8,6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></div><h3>Social Downloader</h3><p>Save from TikTok, Instagram & Facebook.</p></div>
+    </div>
+  </div></section>
+  <section class="alt" id="how"><div class="sec">
+    <h2 class="stitle">How It Works</h2>
+    <div class="steps">
+      <div class="step"><div class="step-n"><span>01</span><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></div><h3>Paste Video URL</h3><p>Copy your link from YouTube, TikTok, Instagram, or Facebook and paste it into the input box.</p></div>
+      <div class="step"><div class="step-n"><span>02</span><svg viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg></div><h3>Select Quality</h3><p>Choose your preferred resolution or audio format. From 360p to 4K, or extract as MP3.</p></div>
+      <div class="step"><div class="step-n"><span>03</span><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div><h3>Download Instantly</h3><p>Get your file in seconds. No waiting, no queue, no registration required.</p></div>
+    </div>
+  </div></section>
+  <section><div class="sec">
+    <h2 class="stitle">Explore Our Tools</h2>
+    <div class="tg">
+      <div class="tc" onclick="go('video-downloader')"><div class="tc-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div><div class="tc-t"><h4>Video Downloader</h4><span>/video-downloader</span></div><div class="tc-arr"><svg viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></div></div>
+      <div class="tc" onclick="go('mp3-downloader')"><div class="tc-icon"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div><div class="tc-t"><h4>MP3 Downloader</h4><span>/mp3-downloader</span></div><div class="tc-arr"><svg viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></div></div>
+      <div class="tc" onclick="go('video-to-audio')"><div class="tc-icon"><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 010 7.07"/></svg></div><div class="tc-t"><h4>Video to Audio</h4><span>/video-to-audio</span></div><div class="tc-arr"><svg viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></div></div>
+      <div class="tc" onclick="go('video-cutter')"><div class="tc-icon"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/></svg></div><div class="tc-t"><h4>Video Cutter</h4><span>/video-cutter</span></div><div class="tc-arr"><svg viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></div></div>
+      <div class="tc" onclick="go('thumbnail-downloader')"><div class="tc-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg></div><div class="tc-t"><h4>Thumbnail Downloader</h4><span>/thumbnail-downloader</span></div><div class="tc-arr"><svg viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></div></div>
+      <div class="tc" onclick="go('duration-calculator')"><div class="tc-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg></div><div class="tc-t"><h4>Duration Calculator</h4><span>/duration-calculator</span></div><div class="tc-arr"><svg viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></div></div>
+      <div class="tc" onclick="go('quality-converter')"><div class="tc-icon"><svg viewBox="0 0 24 24"><polyline points="17,1 21,5 17,9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7,23 3,19 7,15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg></div><div class="tc-t"><h4>Quality Converter</h4><span>/quality-converter</span></div><div class="tc-arr"><svg viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></div></div>
+    </div>
+  </div></section>
+  <section class="alt" id="faq"><div class="sec">
+    <h2 class="stitle">Frequently Asked Questions</h2>
+    <div class="fq-wrap">
+      <div class="fq"><button class="fq-q" onclick="fq(this)">Is QuickSave completely free?<span class="fq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="fq-a"><p>Yes — 100% free. No account, no subscription, no hidden fees, forever.</p></div></div>
+      <div class="fq"><button class="fq-q" onclick="fq(this)">Which platforms are supported?<span class="fq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="fq-a"><p>YouTube, TikTok, Instagram Reels, Facebook, Twitter/X, Vimeo, Dailymotion, and many more.</p></div></div>
+      <div class="fq"><button class="fq-q" onclick="fq(this)">What quality options are available?<span class="fq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="fq-a"><p>360p, 480p, 720p HD, 1080p Full HD, and up to 4K where available from the source.</p></div></div>
+      <div class="fq"><button class="fq-q" onclick="fq(this)">How do I download YouTube as MP3?<span class="fq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="fq-a"><p>Use the MP3 Downloader tool — paste any YouTube URL and click Download MP3. Done in seconds.</p></div></div>
+      <div class="fq"><button class="fq-q" onclick="fq(this)">Is my privacy protected?<span class="fq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="fq-a"><p>We don't store your URLs or files. All processing is temporary and deleted immediately after your download.</p></div></div>
+      <div class="fq"><button class="fq-q" onclick="fq(this)">Do I need to install anything?<span class="fq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="fq-a"><p>No — works entirely in your browser on any device. No app or extension needed.</p></div></div>
+    </div>
+  </div></section>
+  <footer><div class="foot-in"><p>© 2026 QuickSave. All rights reserved.</p><div class="foot-links"><a>Privacy</a><a>Terms</a><a>DMCA</a><a>Contact</a></div></div></footer>
+</div>
+
+<!-- VIDEO DOWNLOADER -->
+<div id="page-video-downloader" class="page">
+  <div class="tool-hero"><div class="bcw"><button onclick="go('home')">Home</button><span>/</span><span>Video Downloader</span></div><span class="badge">Free · No Registration</span><h1>Video Downloader</h1><p>Download YouTube, TikTok, Instagram Reels & Facebook videos. Choose quality before downloading.</p></div>
+  <section><div class="tbox">
+    <div class="tlabel">Video URL</div>
+    <div class="t-row"><input type="url" id="vd-url" placeholder="Paste YouTube, TikTok, Instagram, Facebook link..." onkeydown="if(event.key==='Enter')vdGo()"/><button class="abtn" onclick="vdGo()">Analyze</button></div>
+    <div class="lbar" id="vd-lb"><div class="lbar-in" id="vd-lbi"></div></div>
+    <div id="vd-status" class="status"></div>
+    <div class="opts" id="vd-opts">
+      <div class="vprev"><div class="vthumb" id="vd-thumb"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div><div class="vinfo"><h4 id="vd-title">Video ready</h4><span id="vd-meta">Select quality and download</span></div></div>
+      <div class="ol">Select Quality</div>
+      <div class="qg">
+        <div class="qb active" onclick="selQ(this)" data-h="1080"><span class="qr">FHD</span><span class="qs">1080p</span></div>
+        <div class="qb" onclick="selQ(this)" data-h="720"><span class="qr">HD</span><span class="qs">720p</span></div>
+        <div class="qb" onclick="selQ(this)" data-h="480"><span class="qr">SD</span><span class="qs">480p</span></div>
+        <div class="qb" onclick="selQ(this)" data-h="360"><span class="qr">Low</span><span class="qs">360p</span></div>
+      </div>
+      <div class="ol">Format</div>
+      <div class="fr"><button class="fb active" onclick="selF(this)">MP4</button><button class="fb" onclick="selF(this)">WebM</button></div>
+      <button class="big-btn" id="vd-dl-btn" onclick="vdDownload()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download Video</button>
+    </div>
+  </div></section>
+  <section class="alt"><div class="sec"><h2 class="stitle">Supported Platforms</h2><div class="bg2">
+    <div class="bc"><div class="bi">▶</div><h3>YouTube</h3><p>HD, 4K, Shorts supported.</p></div>
+    <div class="bc"><div class="bi">♪</div><h3>TikTok</h3><p>No watermark downloads.</p></div>
+    <div class="bc"><div class="bi">◉</div><h3>Instagram</h3><p>Reels, posts, IGTV.</p></div>
+    <div class="bc"><div class="bi">◈</div><h3>Facebook</h3><p>Reels and public videos.</p></div>
+    <div class="bc"><div class="bi">𝕏</div><h3>Twitter / X</h3><p>Videos and GIFs.</p></div>
+    <div class="bc"><div class="bi">⭕</div><h3>Vimeo & More</h3><p>50+ other platforms.</p></div>
+  </div></div></section>
+  <section><div class="sec" style="max-width:760px"><div class="tlabel" style="margin-bottom:10px">Related Tools</div><div class="rel-row"><span class="rel" onclick="go('mp3-downloader')">🎵 MP3 Downloader</span><span class="rel" onclick="go('thumbnail-downloader')">🖼 Thumbnail Downloader</span><span class="rel" onclick="go('video-cutter')">✂️ Video Cutter</span></div></div></section>
+  <footer><div class="foot-in"><p>© 2026 QuickSave.</p><div class="foot-links"><a onclick="go('home')">Home</a></div></div></footer>
+</div>
+
+<!-- MP3 DOWNLOADER -->
+<div id="page-mp3-downloader" class="page">
+  <div class="tool-hero"><div class="bcw"><button onclick="go('home')">Home</button><span>/</span><span>MP3 Downloader</span></div><span class="badge">Free · No Registration</span><h1>YouTube MP3 Downloader</h1><p>Convert and download audio from YouTube, TikTok, SoundCloud and any video platform. Up to 320kbps.</p></div>
+  <section><div class="tbox">
+    <div class="tlabel">Video / Audio URL</div>
+    <div class="t-row"><input type="url" id="mp3-url" placeholder="Paste YouTube, SoundCloud, or any video link..." onkeydown="if(event.key==='Enter')mp3Go()"/><button class="abtn" onclick="mp3Go()">Convert</button></div>
+    <div class="lbar" id="mp3-lb"><div class="lbar-in" id="mp3-lbi"></div></div>
+    <div id="mp3-status" class="status"></div>
+    <div class="opts" id="mp3-opts">
+      <div class="vprev"><div class="vthumb"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/></svg></div><div class="vinfo"><h4 id="mp3-title">Audio ready</h4><span id="mp3-meta">Select bitrate and download</span></div></div>
+      <div class="ol">Audio Quality (Bitrate)</div>
+      <div class="qg">
+        <div class="qb active" onclick="selQ(this)" data-q="320"><span class="qr">320</span><span class="qs">kbps</span></div>
+        <div class="qb" onclick="selQ(this)" data-q="256"><span class="qr">256</span><span class="qs">kbps</span></div>
+        <div class="qb" onclick="selQ(this)" data-q="192"><span class="qr">192</span><span class="qs">kbps</span></div>
+        <div class="qb" onclick="selQ(this)" data-q="128"><span class="qr">128</span><span class="qs">kbps</span></div>
+      </div>
+      <div class="ol">Format</div>
+      <div class="fr"><button class="fb active" onclick="selF(this)">MP3</button><button class="fb" onclick="selF(this)">M4A</button><button class="fb" onclick="selF(this)">FLAC</button></div>
+      <button class="big-btn" id="mp3-dl-btn" onclick="mp3Download()"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>Download MP3</button>
+    </div>
+  </div></section>
+  <section><div class="sec" style="max-width:760px"><div class="tlabel" style="margin-bottom:10px">Related Tools</div><div class="rel-row"><span class="rel" onclick="go('video-downloader')">📥 Video Downloader</span><span class="rel" onclick="go('video-to-audio')">🔊 Video to Audio</span></div></div></section>
+  <footer><div class="foot-in"><p>© 2026 QuickSave.</p><div class="foot-links"><a onclick="go('home')">Home</a></div></div></footer>
+</div>
+
+<!-- VIDEO TO AUDIO -->
+<div id="page-video-to-audio" class="page">
+  <div class="tool-hero"><div class="bcw"><button onclick="go('home')">Home</button><span>/</span><span>Video to Audio</span></div><span class="badge">Free Converter</span><h1>Video to Audio Converter</h1><p>Convert any video URL to high-quality audio. Supports MP3, WAV, AAC, FLAC output.</p></div>
+  <section><div class="tbox">
+    <div class="tlabel">Video URL</div>
+    <div class="t-row"><input type="url" id="vta-url" placeholder="Paste any video link..." onkeydown="if(event.key==='Enter')vtaGo()"/><button class="abtn" onclick="vtaGo()">Convert</button></div>
+    <div class="lbar" id="vta-lb"><div class="lbar-in" id="vta-lbi"></div></div>
+    <div id="vta-status" class="status"></div>
+    <div class="opts" id="vta-opts">
+      <div class="ol">Output Format</div>
+      <div class="fr"><button class="fb active" onclick="selF(this)">MP3</button><button class="fb" onclick="selF(this)">WAV</button><button class="fb" onclick="selF(this)">AAC</button><button class="fb" onclick="selF(this)">FLAC</button></div>
+      <div class="ol" style="margin-top:14px">Quality</div>
+      <div class="qg">
+        <div class="qb active" onclick="selQ(this)" data-q="320"><span class="qr">High</span><span class="qs">320kbps</span></div>
+        <div class="qb" onclick="selQ(this)" data-q="192"><span class="qr">Med</span><span class="qs">192kbps</span></div>
+        <div class="qb" onclick="selQ(this)" data-q="128"><span class="qr">Low</span><span class="qs">128kbps</span></div>
+      </div>
+      <button class="big-btn" id="vta-dl-btn" onclick="vtaDownload()"><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 010 14.14"/></svg>Convert & Download</button>
+    </div>
+  </div></section>
+  <footer><div class="foot-in"><p>© 2026 QuickSave.</p><div class="foot-links"><a onclick="go('home')">Home</a></div></div></footer>
+</div>
+
+<!-- VIDEO CUTTER -->
+<div id="page-video-cutter" class="page">
+  <div class="tool-hero"><div class="bcw"><button onclick="go('home')">Home</button><span>/</span><span>Video Cutter</span></div><span class="badge">Free Online Tool</span><h1>Online Video Cutter</h1><p>Trim and cut videos by setting start and end timestamps. Download the clip instantly.</p></div>
+  <section><div class="tbox">
+    <div class="tlabel">Video URL</div>
+    <div class="t-row"><input type="url" id="vc-url" placeholder="Paste video URL..." onkeydown="if(event.key==='Enter')vcGo()"/><button class="abtn" onclick="vcGo()">Load</button></div>
+    <div class="lbar" id="vc-lb"><div class="lbar-in" id="vc-lbi"></div></div>
+    <div class="opts" id="vc-opts">
+      <div style="background:var(--inp);border:1px solid var(--b1);border-radius:var(--r2);height:64px;display:flex;align-items:center;justify-content:center;color:var(--t3);font-size:13px;margin-bottom:18px">▶ Timeline preview</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
+        <div><div class="ol">Start Time</div><input type="text" id="vc-s" placeholder="0:00:00" oninput="vcCalc()" style="width:100%;background:var(--inp);border:1.5px solid var(--b1);border-radius:var(--r2);padding:11px 13px;font-size:15px;color:var(--t);font-family:var(--f);outline:none"/></div>
+        <div><div class="ol">End Time</div><input type="text" id="vc-e" placeholder="0:05:00" oninput="vcCalc()" style="width:100%;background:var(--inp);border:1.5px solid var(--b1);border-radius:var(--r2);padding:11px 13px;font-size:15px;color:var(--t);font-family:var(--f);outline:none"/></div>
+      </div>
+      <div class="status info" id="vc-dur"><svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg><span>Clip duration: <strong id="vc-dur-v">—</strong></span></div>
+      <div class="ol" style="margin-top:14px">Format</div>
+      <div class="fr" style="margin-bottom:16px"><button class="fb active" onclick="selF(this)">MP4</button><button class="fb" onclick="selF(this)">WebM</button><button class="fb" onclick="selF(this)">GIF</button></div>
+      <button class="big-btn" onclick="vcDownload()"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/></svg>Cut & Download</button>
+    </div>
+  </div></section>
+  <footer><div class="foot-in"><p>© 2026 QuickSave.</p><div class="foot-links"><a onclick="go('home')">Home</a></div></div></footer>
+</div>
+
+<!-- THUMBNAIL DOWNLOADER -->
+<div id="page-thumbnail-downloader" class="page">
+  <div class="tool-hero"><div class="bcw"><button onclick="go('home')">Home</button><span>/</span><span>Thumbnail Downloader</span></div><span class="badge">✅ Works Instantly</span><h1>YouTube Thumbnail Downloader</h1><p>Download any YouTube thumbnail in max resolution. 100% free, works right now.</p></div>
+  <section><div class="tbox">
+    <div class="tlabel">YouTube Video URL</div>
+    <div class="t-row"><input type="url" id="td-url" placeholder="Paste YouTube video URL..." onkeydown="if(event.key==='Enter')tdFetch()"/><button class="abtn" onclick="tdFetch()">Fetch</button></div>
+    <div class="lbar" id="td-lb"><div class="lbar-in" id="td-lbi"></div></div>
+    <div id="td-status" class="status"></div>
+    <div class="opts" id="td-opts">
+      <div class="ol">Click any thumbnail to download</div>
+      <div class="thg">
+        <div class="tho sel" onclick="tdDl('maxresdefault')"><div class="th-img"><img id="td-max" src="" alt=""/></div><div class="th-meta"><strong>Max Resolution</strong><span>1280×720</span></div></div>
+        <div class="tho" onclick="tdDl('hqdefault')"><div class="th-img"><img id="td-hq" src="" alt=""/></div><div class="th-meta"><strong>HQ Default</strong><span>480×360</span></div></div>
+        <div class="tho" onclick="tdDl('mqdefault')"><div class="th-img"><img id="td-mq" src="" alt=""/></div><div class="th-meta"><strong>Medium</strong><span>320×180</span></div></div>
+        <div class="tho" onclick="tdDl('default')"><div class="th-img"><img id="td-df" src="" alt=""/></div><div class="th-meta"><strong>Small</strong><span>120×90</span></div></div>
+      </div>
+      <button class="big-btn" onclick="tdDl('maxresdefault')"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>Download Max Resolution</button>
+    </div>
+  </div></section>
+  <footer><div class="foot-in"><p>© 2026 QuickSave.</p><div class="foot-links"><a onclick="go('home')">Home</a></div></div></footer>
+</div>
+
+<!-- DURATION CALCULATOR -->
+<div id="page-duration-calculator" class="page">
+  <div class="tool-hero"><div class="bcw"><button onclick="go('home')">Home</button><span>/</span><span>Duration Calculator</span></div><span class="badge">✅ Works Instantly</span><h1>Video Duration Calculator</h1><p>Calculate total duration and estimated YouTube ad revenue.</p></div>
+  <section><div class="tbox">
+    <div class="cg">
+      <div class="cf"><label>Video Duration (mm:ss)</label><input type="text" id="dc-d" placeholder="e.g. 10:30" oninput="dcCalc()"/></div>
+      <div class="cf"><label>Number of Videos</label><input type="number" id="dc-c" value="1" min="1" oninput="dcCalc()"/></div>
+      <div class="cf"><label>Views Per Month</label><input type="number" id="dc-v" placeholder="e.g. 50000" oninput="dcCalc()"/></div>
+      <div class="cf"><label>RPM Rate (US$)</label><input type="number" id="dc-r" value="3.50" step="0.10" oninput="dcCalc()"/></div>
+    </div>
+    <div class="cr">
+      <div class="cs"><div class="cs-n" id="dc-tot">—</div><div class="cs-l">Total Duration</div></div>
+      <div class="cs"><div class="cs-n" id="dc-mon" style="color:var(--green)">—</div><div class="cs-l">Monthly Revenue</div></div>
+      <div class="cs"><div class="cs-n" id="dc-ann">—</div><div class="cs-l">Annual Revenue</div></div>
+    </div>
+  </div></section>
+  <footer><div class="foot-in"><p>© 2026 QuickSave.</p><div class="foot-links"><a onclick="go('home')">Home</a></div></div></footer>
+</div>
+
+<!-- QUALITY CONVERTER -->
+<div id="page-quality-converter" class="page">
+  <div class="tool-hero"><div class="bcw"><button onclick="go('home')">Home</button><span>/</span><span>Quality Converter</span></div><span class="badge">Free Online Tool</span><h1>Video Quality Converter</h1><p>Reduce video resolution to decrease file size. 4K → 1080p → 720p and more.</p></div>
+  <section><div class="tbox">
+    <div class="tlabel">Video URL</div>
+    <div class="t-row"><input type="url" id="qc-url" placeholder="Paste video URL..." onkeydown="if(event.key==='Enter')qcGo()"/><button class="abtn" onclick="qcGo()">Load</button></div>
+    <div class="lbar" id="qc-lb"><div class="lbar-in" id="qc-lbi"></div></div>
+    <div class="opts" id="qc-opts">
+      <div class="qc-row">
+        <div><div class="ol">Input</div><div class="qc-box hl"><div class="qc-q">4K</div><div class="qc-l">2160p detected</div></div></div>
+        <div class="qc-arr"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg></div>
+        <div><div class="ol">Output</div><select id="qc-sel" onchange="qcCalc()" style="width:100%;background:var(--inp);border:1.5px solid var(--blue);border-radius:var(--r2);padding:13px;font-size:15px;color:var(--t);font-family:var(--f);outline:none;cursor:pointer"><option value="1080">1080p Full HD</option><option value="720" selected>720p HD</option><option value="480">480p SD</option><option value="360">360p</option><option value="240">240p</option></select></div>
+      </div>
+      <div class="srow">
+        <div class="ss"><div class="n" style="color:var(--t2)">1.4 GB</div><div class="l">Original Size</div></div>
+        <div class="ss"><div class="n" style="color:var(--green)" id="qc-ns">~240 MB</div><div class="l">Output Size</div></div>
+        <div class="ss"><div class="n" style="color:var(--blue)" id="qc-sv">83%</div><div class="l">Size Savings</div></div>
+      </div>
+      <button class="big-btn" id="qc-dl-btn" onclick="qcDownload()"><svg viewBox="0 0 24 24"><polyline points="17,1 21,5 17,9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7,23 3,19 7,15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>Convert & Download</button>
+    </div>
+  </div></section>
+  <footer><div class="foot-in"><p>© 2026 QuickSave.</p><div class="foot-links"><a onclick="go('home')">Home</a></div></div></footer>
+</div>
+
+<!-- TOOLS PAGE -->
+<div id="page-tools" class="page">
+  <section><div class="sec"><h1 style="font-size:clamp(28px,4vw,48px);font-weight:800;letter-spacing:-1px;margin-bottom:12px">All Tools</h1><p style="color:var(--t2);font-size:16px;margin-bottom:44px">Free video tools — no registration needed.</p>
+    <div class="fg">
+      <div class="fc" onclick="go('video-downloader')"><div class="fi"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div><h3>Video Downloader</h3><p>Download from YouTube, TikTok, Instagram & Facebook in HD.</p></div>
+      <div class="fc" onclick="go('mp3-downloader')"><div class="fi"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div><h3>MP3 Downloader</h3><p>Extract crisp audio tracks as MP3 files instantly.</p></div>
+      <div class="fc" onclick="go('video-to-audio')"><div class="fi"><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 010 7.07"/></svg></div><h3>Video to Audio</h3><p>Convert any video into pure audio instantly.</p></div>
+      <div class="fc" onclick="go('thumbnail-downloader')"><div class="fi"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg></div><h3>Thumbnail Downloader</h3><p>Download high-res YouTube thumbnails fast.</p></div>
+      <div class="fc" onclick="go('video-cutter')"><div class="fi"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/></svg></div><h3>Video Cutter</h3><p>Trim and clip videos to perfect length.</p></div>
+      <div class="fc" onclick="go('duration-calculator')"><div class="fi"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg></div><h3>Duration Calculator</h3><p>Calculate runtime and ad revenue estimates.</p></div>
+      <div class="fc" onclick="go('quality-converter')"><div class="fi"><svg viewBox="0 0 24 24"><polyline points="17,1 21,5 17,9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7,23 3,19 7,15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg></div><h3>Quality Converter</h3><p>Switch resolutions from 360p to 4K.</p></div>
+    </div>
+  </div></section>
+  <footer><div class="foot-in"><p>© 2026 QuickSave.</p><div class="foot-links"><a onclick="go('home')">Home</a></div></div></footer>
+</div>
+
+<!-- TOAST -->
+<div id="toast"><span id="toast-msg"></span></div>
+
+<script>
+// ══════════ YOUR RAILWAY BACKEND URL ══════════
+const COBALT = 'https://cobalt-api-production-970b.up.railway.app/';
+
+// ══════════ YOUR RAILWAY BACKEND URL ══════════
+
+// ══════════ ROUTING ══════════
+const PAGES = ['home','tools','video-downloader','mp3-downloader','video-to-audio','video-cutter','thumbnail-downloader','duration-calculator','quality-converter'];
+function go(id) {
+  PAGES.forEach(p => { const el = document.getElementById('page-'+p); if(el) el.classList.remove('active'); });
+  const t = document.getElementById('page-'+id);
+  if(t){ t.classList.add('active'); window.scrollTo({top:0,behavior:'smooth'}); }
+  document.querySelectorAll('.nl').forEach(l=>l.classList.remove('active'));
+  const nl = document.getElementById('nl-'+id); if(nl) nl.classList.add('active');
+}
+function goTo(id){ go('home'); setTimeout(()=>{ const el=document.getElementById(id); if(el) el.scrollIntoView({behavior:'smooth'}); },200); }
+function focusHero(){ go('home'); setTimeout(()=>document.getElementById('hero-url').focus(),200); }
+function toggleMob(){ document.getElementById('mob-nav').classList.toggle('open'); }
+document.addEventListener('click', e=>{
+  const mn=document.getElementById('mob-nav'), btn=document.getElementById('mob-btn');
+  if(mn.classList.contains('open') && !mn.contains(e.target) && !btn.contains(e.target)) mn.classList.remove('open');
+});
+
+// ══════════ HERO ══════════
+function heroGo(){
+  const url=document.getElementById('hero-url').value.trim();
+  if(!url){ shake(document.getElementById('hero-box')); return; }
+  go('video-downloader');
+  setTimeout(()=>{ document.getElementById('vd-url').value=url; vdGo(); },300);
+}
+
+// ══════════ UI HELPERS ══════════
+function selQ(el){ el.closest('.qg').querySelectorAll('.qb').forEach(b=>b.classList.remove('active')); el.classList.add('active'); }
+function selF(el){ const p=el.closest('.fr'); if(p) p.querySelectorAll('.fb').forEach(b=>b.classList.remove('active')); el.classList.add('active'); }
+function shake(el){ el.style.borderColor='var(--red)'; el.style.boxShadow='0 0 0 3px rgba(239,68,68,.15)'; setTimeout(()=>{el.style.borderColor='';el.style.boxShadow='';},2000); }
+function toast(msg,type){
+  const t=document.getElementById('toast'), m=document.getElementById('toast-msg');
+  m.textContent=msg; t.className=type||'ok'; t.style.display='flex';
+  clearTimeout(window._tt); window._tt=setTimeout(()=>t.style.display='none',4000);
+}
+function setStatus(id,msg,type){
+  const el=document.getElementById(id+'-status'); if(!el) return;
+  el.textContent=msg; el.className='status '+(type||'info');
+}
+function clearStatus(id){ const el=document.getElementById(id+'-status'); if(el){el.textContent='';el.className='status';} }
+function setBtnLoad(btnId,loading){
+  const btn=document.getElementById(btnId); if(!btn) return;
+  if(loading){ btn._orig=btn.innerHTML; btn.innerHTML='<svg viewBox="0 0 24 24" style="animation:spin 1s linear infinite;flex-shrink:0" fill="none" stroke="white" stroke-width="2" width="18" height="18"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Processing...'; btn.disabled=true; }
+  else{ if(btn._orig) btn.innerHTML=btn._orig; btn.disabled=false; }
+}
+
+// ══════════ COBALT API ══════════
+async function callCobalt(videoUrl, opts) {
+  const endpoint = COBALT.replace(/\/$/, '') + '/';
+  const body = { url: videoUrl };
+  if(opts && opts.downloadMode==='audio'){
+    body.downloadMode = 'audio';
+    body.audioFormat  = opts.audioFormat  || 'mp3';
+    body.audioBitrate = String(opts.audioBitrate || '320');
+  } else {
+    body.downloadMode = 'auto';
+    body.videoQuality = String(opts && opts.videoQuality ? opts.videoQuality : '720');
+  }
+  const res = await fetch(endpoint, {
+    method:'POST',
+    headers:{'Content-Type':'application/json','Accept':'application/json'},
+    body: JSON.stringify(body)
+  });
+  const text = await res.text();
+  let data;
+  try { data = JSON.parse(text); }
+  catch(e) { throw new Error('Bad server response: ' + text.slice(0,120)); }
+  if(data.status==='error') throw new Error(data.error?.code || JSON.stringify(data.error));
+  if(data.url) return data.url;
+  if(data.status==='picker' && data.picker?.[0]?.url) return data.picker[0].url;
+  if(data.tunnel?.[0]) return data.tunnel[0];
+  throw new Error('No URL received. Status: '+data.status);
+}
+
+function startDownload(url){
+  window.open(url,'_blank');
+  toast('✅ Download started! Check your downloads folder or new tab.','ok');
+}
+
+// ══════════ VIDEO DOWNLOADER ══════════
+function vdGo(){
+  const url=document.getElementById('vd-url').value.trim();
+  if(!url){ shake(document.getElementById('vd-url')); return; }
+  clearStatus('vd');
+  document.getElementById('vd-opts').style.display='block';
+  document.getElementById('vd-title').textContent = detectPlatform(url)+' — Ready';
+  document.getElementById('vd-meta').textContent  = 'Select quality then click Download';
+}
+async function vdDownload(){
+  const url=document.getElementById('vd-url').value.trim();
+  if(!url){ toast('Paste a URL first','err'); return; }
+  const qEl=document.querySelector('#page-video-downloader .qb.active');
+  const quality = qEl ? (qEl.dataset.h||'720') : '720';
+  setBtnLoad('vd-dl-btn',true); clearStatus('vd');
+  toast('⏳ Processing download...','info');
+  try {
+    const dlUrl = await callCobalt(url,{videoQuality:quality,downloadMode:'auto'});
+    startDownload(dlUrl);
+  } catch(e) {
+    setStatus('vd','⚠ '+e.message,'err');
+    toast('⚠ '+e.message,'err');
+  } finally { setBtnLoad('vd-dl-btn',false); }
+}
+
+// ══════════ MP3 DOWNLOADER ══════════
+function mp3Go(){
+  const url=document.getElementById('mp3-url').value.trim();
+  if(!url){ shake(document.getElementById('mp3-url')); return; }
+  clearStatus('mp3');
+  document.getElementById('mp3-opts').style.display='block';
+  document.getElementById('mp3-title').textContent = detectPlatform(url)+' — Ready';
+  document.getElementById('mp3-meta').textContent  = 'Select bitrate then click Download';
+}
+async function mp3Download(){
+  const url=document.getElementById('mp3-url').value.trim();
+  if(!url){ toast('Paste a URL first','err'); return; }
+  const qEl=document.querySelector('#page-mp3-downloader .qb.active');
+  const bitrate=qEl?(qEl.dataset.q||'320'):'320';
+  const fEl=document.querySelector('#page-mp3-downloader .fb.active');
+  const fmt=fEl?fEl.textContent.trim().toLowerCase():'mp3';
+  setBtnLoad('mp3-dl-btn',true); clearStatus('mp3');
+  toast('⏳ Converting to '+fmt.toUpperCase()+'...','info');
+  try {
+    const dlUrl = await callCobalt(url,{downloadMode:'audio',audioFormat:fmt,audioBitrate:bitrate});
+    startDownload(dlUrl);
+  } catch(e) {
+    setStatus('mp3','⚠ '+e.message,'err');
+    toast('⚠ '+e.message,'err');
+  } finally { setBtnLoad('mp3-dl-btn',false); }
+}
+
+// ══════════ VIDEO TO AUDIO ══════════
+function vtaGo(){
+  const url=document.getElementById('vta-url').value.trim();
+  if(!url){ shake(document.getElementById('vta-url')); return; }
+  clearStatus('vta');
+  document.getElementById('vta-opts').style.display='block';
+}
+async function vtaDownload(){
+  const url=document.getElementById('vta-url').value.trim();
+  if(!url){ toast('Paste a URL first','err'); return; }
+  const fEl=document.querySelector('#page-video-to-audio .fb.active');
+  const fmt=fEl?fEl.textContent.trim().toLowerCase():'mp3';
+  setBtnLoad('vta-dl-btn',true);
+  toast('⏳ Converting...','info');
+  try {
+    const dlUrl = await callCobalt(url,{downloadMode:'audio',audioFormat:fmt,audioBitrate:'320'});
+    startDownload(dlUrl);
+  } catch(e) { toast('⚠ '+e.message,'err'); }
+  finally { setBtnLoad('vta-dl-btn',false); }
+}
+
+// ══════════ VIDEO CUTTER ══════════
+function vcGo(){
+  const url=document.getElementById('vc-url').value.trim();
+  if(!url){ shake(document.getElementById('vc-url')); return; }
+  document.getElementById('vc-opts').style.display='block';
+}
+function vcCalc(){
+  const s=document.getElementById('vc-s').value, e=document.getElementById('vc-e').value;
+  const toSec=t=>{const p=t.split(':').reverse();return(parseInt(p[0])||0)+(parseInt(p[1])||0)*60+(parseInt(p[2])||0)*3600;};
+  if(s&&e){const d=toSec(e)-toSec(s);if(d>0){document.getElementById('vc-dur-v').textContent=Math.floor(d/60)+'m '+(d%60)+'s';document.getElementById('vc-dur').style.display='flex';return;}}
+  document.getElementById('vc-dur').style.display='none';
+}
+function vcDownload(){ toast('⚠ Video cutting needs a paid server. Use CapCut (free app) to trim videos.','info'); }
+
+// ══════════ THUMBNAIL DOWNLOADER ══════════
+function tdFetch(){
+  const url=document.getElementById('td-url').value.trim();
+  if(!url){ shake(document.getElementById('td-url')); return; }
+  const vid=getYTId(url);
+  if(!vid){ setStatus('td','⚠ Please paste a valid YouTube URL','err'); return; }
+  clearStatus('td');
+  document.getElementById('td-opts').style.display='block';
+  window._tdVid=vid;
+  [['max','maxresdefault'],['hq','hqdefault'],['mq','mqdefault'],['df','default']].forEach(([k,q])=>{
+    const img=document.getElementById('td-'+k);
+    if(img){img.src='https://i.ytimg.com/vi/'+vid+'/'+q+'.jpg'; img.onerror=()=>img.src='https://img.youtube.com/vi/'+vid+'/'+q+'.jpg';}
+  });
+  toast('✅ Thumbnails loaded!','ok');
+}
+function tdDl(quality){
+  const vid=window._tdVid||getYTId(document.getElementById('td-url').value.trim());
+  if(!vid){toast('Fetch thumbnails first','err');return;}
+  const imgUrl='https://i.ytimg.com/vi/'+vid+'/'+quality+'.jpg';
+  fetch(imgUrl).then(r=>r.blob()).then(blob=>{
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob); a.download='thumbnail-'+vid+'-'+quality+'.jpg';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(a.href); toast('✅ Thumbnail downloaded!','ok');
+  }).catch(()=>{window.open(imgUrl,'_blank');});
+}
+function getYTId(url){const m=url.match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([a-zA-Z0-9_-]{11})/);return m?m[1]:null;}
+
+// ══════════ DURATION CALCULATOR ══════════
+function dcCalc(){
+  const dur=document.getElementById('dc-d').value, count=Math.max(1,parseInt(document.getElementById('dc-c').value)||1);
+  const views=parseInt(document.getElementById('dc-v').value)||0, rpm=parseFloat(document.getElementById('dc-r').value)||3.5;
+  let secs=0;
+  if(dur){const p=dur.split(':').reverse();secs=((parseInt(p[0])||0)+(parseInt(p[1])||0)*60+(parseInt(p[2])||0)*3600)*count;}
+  document.getElementById('dc-tot').textContent=secs>0?(secs>=3600?Math.floor(secs/3600)+'h '+Math.floor((secs%3600)/60)+'m':Math.floor(secs/60)+'m '+(secs%60)+'s'):'—';
+  document.getElementById('dc-mon').textContent=views>0?'$'+(views/1000*rpm).toFixed(2):'—';
+  document.getElementById('dc-ann').textContent=views>0?'$'+((views/1000*rpm)*12).toFixed(0):'—';
+}
+
+// ══════════ QUALITY CONVERTER ══════════
+function qcGo(){
+  const url=document.getElementById('qc-url').value.trim();
+  if(!url){shake(document.getElementById('qc-url'));return;}
+  document.getElementById('qc-opts').style.display='block'; qcCalc();
+}
+function qcCalc(){
+  const v=document.getElementById('qc-sel')?.value||'720';
+  const map={'1080':['~380 MB','73%'],'720':['~240 MB','83%'],'480':['~120 MB','91%'],'360':['~70 MB','95%'],'240':['~40 MB','97%']};
+  const [sz,sv]=map[v]||['~240 MB','83%'];
+  document.getElementById('qc-ns').textContent=sz; document.getElementById('qc-sv').textContent=sv;
+}
+async function qcDownload(){
+  const url=document.getElementById('qc-url').value.trim();
+  if(!url){toast('Paste a URL first','err');return;}
+  const q=document.getElementById('qc-sel')?.value||'720';
+  setBtnLoad('qc-dl-btn',true);
+  toast('⏳ Processing at '+q+'p...','info');
+  try {
+    const dlUrl=await callCobalt(url,{videoQuality:q,downloadMode:'auto'});
+    startDownload(dlUrl);
+  } catch(e){ toast('⚠ '+e.message,'err'); }
+  finally{ setBtnLoad('qc-dl-btn',false); }
+}
+
+// ══════════ FAQ ══════════
+function fq(btn){
+  const a=btn.nextElementSibling, isOpen=a.style.maxHeight&&a.style.maxHeight!=='0px';
+  btn.closest('.fq-wrap').querySelectorAll('.fq-a').forEach(x=>x.style.maxHeight='0px');
+  btn.closest('.fq-wrap').querySelectorAll('.fq-q').forEach(x=>x.classList.remove('open'));
+  if(!isOpen){a.style.maxHeight=a.scrollHeight+'px';btn.classList.add('open');}
+}
+
+// ══════════ PLATFORM DETECT ══════════
+function detectPlatform(url){
+  if(!url) return 'Video';
+  if(url.includes('youtube')||url.includes('youtu.be')) return 'YouTube';
+  if(url.includes('tiktok')) return 'TikTok';
+  if(url.includes('instagram')) return 'Instagram';
+  if(url.includes('facebook')||url.includes('fb.')) return 'Facebook';
+  if(url.includes('twitter')||url.includes('x.com')) return 'Twitter/X';
+  if(url.includes('vimeo')) return 'Vimeo';
+  return 'Video';
+}
+</script>
+</body>
+</html>
